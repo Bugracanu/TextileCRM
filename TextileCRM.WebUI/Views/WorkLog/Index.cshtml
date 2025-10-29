@@ -1,0 +1,82 @@
+@model IEnumerable<TextileCRM.Domain.Entities.WorkLog>
+
+@{
+    ViewData["Title"] = "Çalışma Kayıtları";
+}
+
+<div class="container">
+    <h1>Çalışma Kayıtları</h1>
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Yeni Kayıt
+        </a>
+    </p>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Çalışan</th>
+                        <th>Giriş Zamanı</th>
+                        <th>Çıkış Zamanı</th>
+                        <th>Toplam Süre</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Employee.FirstName @item.Employee.LastName</td>
+                            <td>@item.CheckInTime.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @if (item.CheckOutTime.HasValue)
+                                {
+                                    @item.CheckOutTime.Value.ToString("dd/MM/yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Devam Ediyor</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.CheckOutTime.HasValue)
+                                {
+                                    var duration = item.CheckOutTime.Value - item.CheckInTime;
+                                    @duration.ToString(@"hh\:mm")
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    @if (!item.CheckOutTime.HasValue)
+                                    {
+                                        <form asp-action="CheckOut" method="post" style="display: inline;">
+                                            <input type="hidden" name="workLogId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-box-arrow-right"></i> Çıkış
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

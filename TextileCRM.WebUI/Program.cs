@@ -1,0 +1,38 @@
+using TextileCRM.Application.Interfaces;
+using TextileCRM.Application.Services;
+using TextileCRM.WebUI.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Register Mock Services
+builder.Services.AddSingleton<TextileCRM.Application.Interfaces.ICustomerService, MockCustomerService>();
+builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IOrderService, MockOrderService>();
+builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IProductService, MockProductService>();
+builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IEmployeeService, MockEmployeeService>();
+builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IWorkLogService, MockWorkLogService>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
