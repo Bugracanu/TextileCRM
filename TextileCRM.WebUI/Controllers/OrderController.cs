@@ -48,6 +48,9 @@ namespace TextileCRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Order order)
         {
+            ModelState.Remove("Customer");
+            ModelState.Remove("OrderItems");
+
             if (ModelState.IsValid)
             {
                 await _orderService.CreateOrderAsync(order);
@@ -77,10 +80,13 @@ namespace TextileCRM.WebUI.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove("Customer");
+            ModelState.Remove("OrderItems");
+
             if (ModelState.IsValid)
             {
                 await _orderService.UpdateOrderAsync(order);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = order.Id });
             }
             await PopulateCustomerDropdown();
             return View(order);
@@ -114,7 +120,7 @@ namespace TextileCRM.WebUI.Controllers
         private async Task PopulateCustomerDropdown()
         {
             var customers = await _customerService.GetAllCustomersAsync();
-            ViewBag.Customers = new SelectList(customers, "Id", "CompanyName");
+            ViewBag.Customers = new SelectList(customers, "Id", "Name");
         }
 
         public async Task<IActionResult> AddItem(int orderId)

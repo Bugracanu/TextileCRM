@@ -1,0 +1,44 @@
+@model TextileCRM.Domain.Entities.Employee
+
+@{
+    ViewData["Title"] = "Çalışan Sil";
+}
+
+<div class="container">
+    <h1>Çalışan Sil</h1>
+
+    <h3 class="text-danger">Bu çalışanı silmek istediğinizden emin misiniz?</h3>
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ID</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Ad Soyad</dt>
+                <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+
+                <dt class="col-sm-3">E-posta</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Telefon</dt>
+                <dd class="col-sm-9">@Model.Phone</dd>
+
+                <dt class="col-sm-3">Departman</dt>
+                <dd class="col-sm-9">@Model.Department</dd>
+
+                <dt class="col-sm-3">Pozisyon</dt>
+                <dd class="col-sm-9">@Model.Position</dd>
+
+                <dt class="col-sm-3">İşe Giriş Tarihi</dt>
+                <dd class="col-sm-9">@Model.HireDate.ToShortDateString()</dd>
+            </dl>
+        </div>
+    </div>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+

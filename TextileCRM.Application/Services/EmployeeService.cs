@@ -20,7 +20,7 @@ namespace TextileCRM.Application.Services
             return await _employeeRepository.GetAllAsync();
         }
 
-        public async Task<Employee> GetEmployeeByIdAsync(int id)
+        public async Task<Employee?> GetEmployeeByIdAsync(int id)
         {
             return await _employeeRepository.GetByIdAsync(id);
         }

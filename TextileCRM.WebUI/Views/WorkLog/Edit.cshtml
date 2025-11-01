@@ -1,0 +1,60 @@
+@model TextileCRM.Domain.Entities.WorkLog
+
+@{
+    ViewData["Title"] = "Çalışma Kaydı Düzenle";
+}
+
+<div class="container">
+    <h1>Çalışma Kaydı Düzenle</h1>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="CreatedDate" />
+                
+                <div class="form-group mb-3">
+                    <label asp-for="EmployeeId" class="control-label">Çalışan</label>
+                    <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.Employees"></select>
+                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="CheckInTime" class="control-label">Giriş Zamanı</label>
+                    <input asp-for="CheckInTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="CheckInTime" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="CheckOutTime" class="control-label">Çıkış Zamanı</label>
+                    <input asp-for="CheckOutTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="CheckOutTime" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="WorkHours" class="control-label">Çalışma Saati</label>
+                    <input asp-for="WorkHours" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="WorkHours" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Notes" class="control-label">Notlar</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <input type="submit" value="Kaydet" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -13,45 +13,54 @@
         </a>
     </p>
 
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Ad Soyad</th>
-                        <th>Departman</th>
-                        <th>Pozisyon</th>
-                        <th>İletişim</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+    @if (Model != null && Model.Any())
+    {
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>@item.Id</td>
-                            <td>@item.FirstName @item.LastName</td>
-                            <td>@item.Department</td>
-                            <td>@item.Position</td>
-                            <td>@item.Email</td>
-                            <td>
-                                <div class="btn-group">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
+                            <th>ID</th>
+                            <th>Ad Soyad</th>
+                            <th>Departman</th>
+                            <th>Pozisyon</th>
+                            <th>İletişim</th>
+                            <th>İşlemler</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.FirstName @item.LastName</td>
+                                <td>@item.Department</td>
+                                <td>@item.Position</td>
+                                <td>@item.Email</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Henüz çalışan kaydı bulunmamaktadır. Yeni çalışan eklemek için yukarıdaki butonu kullanabilirsiniz.
+        </div>
+    }
 </div>

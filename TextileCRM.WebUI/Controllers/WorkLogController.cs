@@ -46,6 +46,8 @@ namespace TextileCRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(WorkLog workLog)
         {
+            ModelState.Remove("Employee");
+
             if (ModelState.IsValid)
             {
                 await _workLogService.CreateWorkLogAsync(workLog);
@@ -74,6 +76,8 @@ namespace TextileCRM.WebUI.Controllers
             {
                 return NotFound();
             }
+
+            ModelState.Remove("Employee");
 
             if (ModelState.IsValid)
             {

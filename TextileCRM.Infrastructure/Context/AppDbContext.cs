@@ -10,12 +10,12 @@ public class AppDbContext : DbContext
     {
     }
     
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Employee> Employees { get; set; }
-    public DbSet<WorkLog> WorkLogs { get; set; }
+    public DbSet<Customer> Customers { get; set; } = null!;
+    public DbSet<Order> Orders { get; set; } = null!;
+    public DbSet<OrderItem> OrderItems { get; set; } = null!;
+    public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<Employee> Employees { get; set; } = null!;
+    public DbSet<WorkLog> WorkLogs { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

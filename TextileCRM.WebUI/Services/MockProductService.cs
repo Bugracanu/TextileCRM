@@ -28,7 +28,7 @@ namespace TextileCRM.WebUI.Services
             return await Task.FromResult(_products);
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
             return await Task.FromResult(_products.FirstOrDefault(p => p.Id == id));
         }
@@ -40,7 +40,8 @@ namespace TextileCRM.WebUI.Services
 
         public async Task CreateProductAsync(Product product)
         {
-            product.Id = _products.Max(p => p.Id) + 1;
+            product.Id = _products.Any() ? _products.Max(p => p.Id) + 1 : 1;
+            product.Code = $"URN-{product.Id:D4}";
             _products.Add(product);
             await Task.CompletedTask;
         }
@@ -53,6 +54,7 @@ namespace TextileCRM.WebUI.Services
                 existingProduct.Name = product.Name;
                 existingProduct.Description = product.Description;
                 existingProduct.Category = product.Category;
+                existingProduct.UnitPrice = product.UnitPrice;
                 existingProduct.Price = product.Price;
                 existingProduct.StockQuantity = product.StockQuantity;
             }

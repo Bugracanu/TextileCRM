@@ -26,7 +26,7 @@ namespace TextileCRM.WebUI.Services
             return await Task.FromResult(_employees);
         }
 
-        public async Task<Employee> GetEmployeeByIdAsync(int id)
+        public async Task<Employee?> GetEmployeeByIdAsync(int id)
         {
             return await Task.FromResult(_employees.FirstOrDefault(e => e.Id == id));
         }
@@ -52,8 +52,12 @@ namespace TextileCRM.WebUI.Services
                 existingEmployee.LastName = employee.LastName;
                 existingEmployee.Email = employee.Email;
                 existingEmployee.Phone = employee.Phone;
+                existingEmployee.Address = employee.Address;
                 existingEmployee.Department = employee.Department;
+                existingEmployee.Position = employee.Position;
+                existingEmployee.Salary = employee.Salary;
                 existingEmployee.HireDate = employee.HireDate;
+                existingEmployee.TerminationDate = employee.TerminationDate;
             }
             await Task.CompletedTask;
         }

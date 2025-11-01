@@ -1,0 +1,47 @@
+@model TextileCRM.Domain.Entities.WorkLog
+
+@{
+    ViewData["Title"] = "Çalışma Kaydı Sil";
+}
+
+<div class="container">
+    <h1>Çalışma Kaydı Sil</h1>
+
+    <h3 class="text-danger">Bu çalışma kaydını silmek istediğinizden emin misiniz?</h3>
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ID</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Çalışan</dt>
+                <dd class="col-sm-9">@(Model.Employee != null ? ($"{Model.Employee.FirstName} {Model.Employee.LastName}") : ($"Çalışan #{Model.EmployeeId}"))</dd>
+
+                <dt class="col-sm-3">Giriş Zamanı</dt>
+                <dd class="col-sm-9">@Model.CheckInTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Çıkış Zamanı</dt>
+                <dd class="col-sm-9">
+                    @if (Model.CheckOutTime.HasValue)
+                    {
+                        @Model.CheckOutTime.Value.ToString("dd/MM/yyyy HH:mm")
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Notlar</dt>
+                <dd class="col-sm-9">@Model.Notes</dd>
+            </dl>
+        </div>
+    </div>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+

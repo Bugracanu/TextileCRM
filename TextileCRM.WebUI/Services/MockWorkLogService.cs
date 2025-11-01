@@ -26,7 +26,7 @@ namespace TextileCRM.WebUI.Services
             return await Task.FromResult(_workLogs);
         }
 
-        public async Task<WorkLog> GetWorkLogByIdAsync(int id)
+        public async Task<WorkLog?> GetWorkLogByIdAsync(int id)
         {
             return await Task.FromResult(_workLogs.FirstOrDefault(w => w.Id == id));
         }
@@ -56,6 +56,7 @@ namespace TextileCRM.WebUI.Services
                 existingWorkLog.EmployeeId = workLog.EmployeeId;
                 existingWorkLog.CheckInTime = workLog.CheckInTime;
                 existingWorkLog.CheckOutTime = workLog.CheckOutTime;
+                existingWorkLog.WorkHours = workLog.WorkHours;
                 existingWorkLog.Notes = workLog.Notes;
             }
             await Task.CompletedTask;

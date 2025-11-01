@@ -26,7 +26,7 @@ namespace TextileCRM.WebUI.Services
             return await Task.FromResult(_orders);
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id)
+        public async Task<Order?> GetOrderByIdAsync(int id)
         {
             return await Task.FromResult(_orders.FirstOrDefault(o => o.Id == id));
         }
@@ -53,6 +53,7 @@ namespace TextileCRM.WebUI.Services
                 existingOrder.DeliveryDate = order.DeliveryDate;
                 existingOrder.Status = order.Status;
                 existingOrder.TotalAmount = order.TotalAmount;
+                existingOrder.Notes = order.Notes;
             }
             await Task.CompletedTask;
         }

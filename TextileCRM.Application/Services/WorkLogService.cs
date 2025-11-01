@@ -22,7 +22,7 @@ namespace TextileCRM.Application.Services
             return await _workLogRepository.GetAllAsync();
         }
 
-        public async Task<WorkLog> GetWorkLogByIdAsync(int id)
+        public async Task<WorkLog?> GetWorkLogByIdAsync(int id)
         {
             return await _workLogRepository.GetByIdAsync(id);
         }

@@ -31,7 +31,7 @@
                     {
                         <tr>
                             <td>@item.Id</td>
-                            <td>@item.Employee.FirstName @item.Employee.LastName</td>
+                            <td>@(item.Employee != null ? ($"{item.Employee.FirstName} {item.Employee.LastName}") : ($"Çalışan #{item.EmployeeId}"))</td>
                             <td>@item.CheckInTime.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>
                                 @if (item.CheckOutTime.HasValue)

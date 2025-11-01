@@ -13,5 +13,5 @@ public class WorkLog
     public DateTime CreatedDate { get; set; }
     
     // Navigation properties
-    public Employee Employee { get; set; }
+    public Employee Employee { get; set; } = null!;
 }

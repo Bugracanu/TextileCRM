@@ -1,0 +1,41 @@
+@model TextileCRM.Domain.Entities.Product
+
+@{
+    ViewData["Title"] = "Ürün Sil";
+}
+
+<div class="container">
+    <h1>Ürün Sil</h1>
+
+    <h3 class="text-danger">Bu ürünü silmek istediğinizden emin misiniz?</h3>
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">ID</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Ürün Adı</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Ürün Kodu</dt>
+                <dd class="col-sm-9">@Model.Code</dd>
+
+                <dt class="col-sm-3">Kategori</dt>
+                <dd class="col-sm-9">@Model.Category</dd>
+
+                <dt class="col-sm-3">Fiyat</dt>
+                <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+
+                <dt class="col-sm-3">Stok Miktarı</dt>
+                <dd class="col-sm-9">@Model.StockQuantity</dd>
+            </dl>
+        </div>
+    </div>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+

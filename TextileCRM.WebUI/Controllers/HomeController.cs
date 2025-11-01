@@ -35,7 +35,7 @@ public class HomeController : Controller
         ViewBag.ProductCount = (await _productService.GetAllProductsAsync()).Count();
         ViewBag.EmployeeCount = (await _employeeService.GetAllEmployeesAsync()).Count();
         
-        ViewBag.RecentOrders = (await _orderService.GetAllOrdersAsync()).OrderByDescending(o => o.OrderDate).Take(5);
+        ViewBag.RecentOrders = (await _orderService.GetAllOrdersAsync()).OrderBy(o => o.Id).Take(5);
         
         return View();
     }

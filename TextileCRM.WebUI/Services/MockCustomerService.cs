@@ -26,7 +26,7 @@ namespace TextileCRM.WebUI.Services
             return await Task.FromResult(_customers);
         }
 
-        public async Task<Customer> GetCustomerByIdAsync(int id)
+        public async Task<Customer?> GetCustomerByIdAsync(int id)
         {
             return await Task.FromResult(_customers.FirstOrDefault(c => c.Id == id));
         }
@@ -45,6 +45,7 @@ namespace TextileCRM.WebUI.Services
             {
                 existingCustomer.Name = customer.Name;
                 existingCustomer.ContactName = customer.ContactName;
+                existingCustomer.CompanyName = customer.CompanyName;
                 existingCustomer.Email = customer.Email;
                 existingCustomer.Phone = customer.Phone;
                 existingCustomer.Address = customer.Address;

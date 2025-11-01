@@ -20,7 +20,7 @@ namespace TextileCRM.Application.Services
             return await _productRepository.GetAllAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
             return await _productRepository.GetByIdAsync(id);
         }
@@ -33,6 +33,9 @@ namespace TextileCRM.Application.Services
         public async Task CreateProductAsync(Product product)
         {
             product.CreatedDate = DateTime.Now;
+            var allProducts = await _productRepository.GetAllAsync();
+            var maxId = allProducts.Any() ? allProducts.Max(p => p.Id) : 0;
+            product.Code = $"URN-{(maxId + 1):D4}";
             await _productRepository.AddAsync(product);
             await _productRepository.SaveChangesAsync();
         }

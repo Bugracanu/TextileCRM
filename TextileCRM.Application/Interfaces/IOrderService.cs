@@ -7,7 +7,7 @@ namespace TextileCRM.Application.Interfaces
     public interface IOrderService
     {
         Task<IEnumerable<Order>> GetAllOrdersAsync();
-        Task<Order> GetOrderByIdAsync(int id);
+        Task<Order?> GetOrderByIdAsync(int id);
         Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId);
         Task CreateOrderAsync(Order order);
         Task UpdateOrderAsync(Order order);

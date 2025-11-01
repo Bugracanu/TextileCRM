@@ -12,6 +12,7 @@ public class Employee
     public string Phone { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public DateTime HireDate { get; set; }
+    public DateTime? TerminationDate { get; set; }
     public decimal Salary { get; set; }
     public Department Department { get; set; }
     public string Position { get; set; } = string.Empty;

@@ -1,0 +1,44 @@
+@model TextileCRM.Domain.Entities.Order
+
+@{
+    ViewData["Title"] = "Sipariş Sil";
+}
+
+<div class="container">
+    <h1>Sipariş Sil</h1>
+
+    <h3 class="text-danger">Bu siparişi silmek istediğinizden emin misiniz?</h3>
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Sipariş No</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Müşteri</dt>
+                <dd class="col-sm-9">@(Model.Customer?.CompanyName ?? ($"Müşteri #{Model.CustomerId}"))</dd>
+
+                <dt class="col-sm-3">Sipariş Tarihi</dt>
+                <dd class="col-sm-9">@Model.OrderDate.ToShortDateString()</dd>
+
+                <dt class="col-sm-3">Teslim Tarihi</dt>
+                <dd class="col-sm-9">@(Model.DeliveryDate?.ToShortDateString() ?? "-")</dd>
+
+                <dt class="col-sm-3">Durum</dt>
+                <dd class="col-sm-9">@Model.Status</dd>
+
+                <dt class="col-sm-3">Toplam Tutar</dt>
+                <dd class="col-sm-9">@Model.TotalAmount.ToString("C")</dd>
+
+                <dt class="col-sm-3">Notlar</dt>
+                <dd class="col-sm-9">@Model.Notes</dd>
+            </dl>
+        </div>
+    </div>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+

@@ -21,7 +21,7 @@ namespace TextileCRM.Application.Services
             return await _orderRepository.GetAllAsync();
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id)
+        public async Task<Order?> GetOrderByIdAsync(int id)
         {
             return await _orderRepository.GetByIdAsync(id);
         }

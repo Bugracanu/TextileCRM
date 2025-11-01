@@ -15,7 +15,7 @@ public class Order
     public DateTime CreatedDate { get; set; }
     
     // Navigation properties
-    public Customer Customer { get; set; }
+    public Customer Customer { get; set; } = null!;
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
 

@@ -39,6 +39,9 @@ namespace TextileCRM.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
         {
+            ModelState.Remove("OrderItems");
+            ModelState.Remove("Code");
+
             if (ModelState.IsValid)
             {
                 await _productService.CreateProductAsync(product);
@@ -65,6 +68,8 @@ namespace TextileCRM.WebUI.Controllers
             {
                 return NotFound();
             }
+
+            ModelState.Remove("OrderItems");
 
             if (ModelState.IsValid)
             {
