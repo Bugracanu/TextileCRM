@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -7,6 +8,7 @@ using TextileCRM.Domain.Entities;
 
 namespace TextileCRM.WebUI.Controllers
 {
+    [Authorize]
     public class WorkLogController : Controller
     {
         private readonly IWorkLogService _workLogService;

@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using TextileCRM.Application.Interfaces;
 using TextileCRM.Application.Services;
+using TextileCRM.Infrastructure.Context;
+using TextileCRM.Infrastructure.Repositories;
 using TextileCRM.WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,12 +11,34 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Register Mock Services
-builder.Services.AddSingleton<TextileCRM.Application.Interfaces.ICustomerService, MockCustomerService>();
-builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IOrderService, MockOrderService>();
-builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IProductService, MockProductService>();
-builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IEmployeeService, MockEmployeeService>();
-builder.Services.AddSingleton<TextileCRM.Application.Interfaces.IWorkLogService, MockWorkLogService>();
+// Add DbContext
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.AccessDeniedPath = "/Auth/Login";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+    });
+
+builder.Services.AddAuthorization();
+
+// Register Repository
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+// Register Real Services with EF Core
+builder.Services.AddScoped<TextileCRM.Application.Interfaces.IAuthService, AuthService>();
+builder.Services.AddScoped<TextileCRM.Application.Interfaces.IUserService, UserService>();
+builder.Services.AddScoped<TextileCRM.Application.Interfaces.ICustomerService, CustomerService>();
+builder.Services.AddScoped<TextileCRM.Application.Interfaces.IOrderService, OrderService>();
+builder.Services.AddScoped<TextileCRM.Application.Interfaces.IProductService, ProductService>();
+builder.Services.AddScoped<TextileCRM.Application.Interfaces.IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<TextileCRM.Application.Interfaces.IWorkLogService, WorkLogService>();
 
 var app = builder.Build();
 
@@ -29,6 +55,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

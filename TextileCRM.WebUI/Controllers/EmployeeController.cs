@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TextileCRM.Application.Interfaces;
@@ -5,6 +6,7 @@ using TextileCRM.Domain.Entities;
 
 namespace TextileCRM.WebUI.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;

@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Employee> Employees { get; set; } = null!;
     public DbSet<WorkLog> WorkLogs { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +42,37 @@ public class AppDbContext : DbContext
             .HasOne(wl => wl.Employee)
             .WithMany(e => e.WorkLogs)
             .HasForeignKey(wl => wl.EmployeeId);
+            
+        // Seed data
+        modelBuilder.Entity<User>().HasData(
+            new User 
+            { 
+                Id = 1, 
+                Username = "admin", 
+                PasswordHash = "admin123",
+                Role = "Admin", 
+                IsActive = true,
+                CreatedDate = new DateTime(2024, 6, 1)
+            },
+            new User 
+            { 
+                Id = 2, 
+                Username = "manager", 
+                PasswordHash = "manager123",
+                Role = "Manager", 
+                IsActive = true,
+                CreatedDate = new DateTime(2024, 9, 1)
+            },
+            new User 
+            { 
+                Id = 3, 
+                Username = "user", 
+                PasswordHash = "user123",
+                Role = "User", 
+                IsActive = true,
+                CreatedDate = new DateTime(2024, 10, 1)
+            }
+        );
     }
 }
 

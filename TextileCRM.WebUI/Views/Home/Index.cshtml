@@ -4,49 +4,96 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="container">
-    <h1 class="display-4 mb-4">Tekstil CRM Dashboard</h1>
-    
-    <!-- İstatistik Kartları -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-people"></i> Müşteriler</h5>
-                    <p class="card-text display-6">@ViewBag.CustomerCount</p>
-                    <a asp-controller="Customer" asp-action="Index" class="text-white">Detaylar <i class="bi bi-arrow-right"></i></a>
-                </div>
+<div class="container-fluid px-0 mt-0">
+    <div class="row g-0">
+        <!-- Sol Sidebar -->
+        <div class="col-md-3 px-2">
+            <div class="d-flex flex-column gap-2">
+                <a asp-controller="Customer" asp-action="Index" class="text-decoration-none">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0"><i class="bi bi-people"></i> Müşteriler</h6>
+                                </div>
+                                <h4 class="mb-0">@ViewBag.CustomerCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                <a asp-controller="Order" asp-action="Index" class="text-decoration-none">
+                    <div class="card bg-success text-white">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0"><i class="bi bi-cart3"></i> Siparişler</h6>
+                                </div>
+                                <h4 class="mb-0">@ViewBag.OrderCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                <a asp-controller="Product" asp-action="Index" class="text-decoration-none">
+                    <div class="card bg-info text-white">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0"><i class="bi bi-box-seam"></i> Ürünler</h6>
+                                </div>
+                                <h4 class="mb-0">@ViewBag.ProductCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                <a asp-controller="Employee" asp-action="Index" class="text-decoration-none">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0"><i class="bi bi-person-badge"></i> Çalışanlar</h6>
+                                </div>
+                                <h4 class="mb-0">@ViewBag.EmployeeCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                <a asp-controller="WorkLog" asp-action="Index" class="text-decoration-none">
+                    <div class="card bg-dark text-white">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0"><i class="bi bi-clock-history"></i> Çalışma Kayıtları</h6>
+                                </div>
+                                <h4 class="mb-0">@ViewBag.WorkLogCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="User" asp-action="Index" class="text-decoration-none">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0"><i class="bi bi-people-fill"></i> Kullanıcılar</h6>
+                                    </div>
+                                    <h4 class="mb-0"><i class="bi bi-shield-lock"></i></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-cart3"></i> Siparişler</h5>
-                    <p class="card-text display-6">@ViewBag.OrderCount</p>
-                    <a asp-controller="Order" asp-action="Index" class="text-white">Detaylar <i class="bi bi-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-box-seam"></i> Ürünler</h5>
-                    <p class="card-text display-6">@ViewBag.ProductCount</p>
-                    <a asp-controller="Product" asp-action="Index" class="text-white">Detaylar <i class="bi bi-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-person-badge"></i> Çalışanlar</h5>
-                    <p class="card-text display-6">@ViewBag.EmployeeCount</p>
-                    <a asp-controller="Employee" asp-action="Index" class="text-white">Detaylar <i class="bi bi-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
+        
+        <!-- Sağ İçerik Alanı -->
+        <div class="col-md-9 px-3">
     <!-- Son Siparişler -->
     <div class="row">
         <div class="col-md-12">
@@ -79,8 +126,11 @@
                                         <td>@order.Status</td>
                                         <td>@order.TotalAmount.ToString("C")</td>
                                         <td>
-                                            <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
+                                            <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-primary me-1">
                                                 <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-controller="Order" asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-warning">
+                                                <i class="bi bi-pencil"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -94,6 +144,8 @@
                     }
                 </div>
             </div>
+        </div>
+    </div>
         </div>
     </div>
 </div>

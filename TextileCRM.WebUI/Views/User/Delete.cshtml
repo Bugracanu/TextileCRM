@@ -1,0 +1,60 @@
+@model TextileCRM.Domain.Entities.User
+
+@{
+    ViewData["Title"] = "Kullanıcı Sil";
+}
+
+<div class="container">
+    <h1>Kullanıcı Sil</h1>
+
+    <h3 class="text-danger">Bu kullanıcıyı silmek istediğinizden emin misiniz?</h3>
+    
+    <div class="card mb-3">
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th style="width: 30%;">Kullanıcı Adı</th>
+                        <td>@Model.Username</td>
+                    </tr>
+                    <tr>
+                        <th>Rol</th>
+                        <td>
+                            <span class="badge @(Model.Role == "Admin" ? "bg-danger" : Model.Role == "Manager" ? "bg-warning" : "bg-info")">
+                                @Model.Role
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Durum</th>
+                        <td>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Pasif</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Kayıt Tarihi</th>
+                        <td>@Model.CreatedDate.ToShortDateString()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Sil
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> İptal
+        </a>
+    </form>
+</div>
+
