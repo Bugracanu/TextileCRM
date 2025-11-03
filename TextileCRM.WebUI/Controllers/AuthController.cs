@@ -30,7 +30,7 @@ namespace TextileCRM.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password, string? returnUrl = null)
+        public async Task<IActionResult> Login(string username, string password, bool rememberMe = false, string? returnUrl = null)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
@@ -54,10 +54,14 @@ namespace TextileCRM.WebUI.Controllers
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            // Beni Hatırla seçeneğine göre cookie süresi ayarlanır
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
+                IsPersistent = rememberMe, // rememberMe true ise cookie tarayıcı kapanınca silinmez
+                ExpiresUtc = rememberMe 
+                    ? DateTimeOffset.UtcNow.AddDays(30)  // Beni hatırla: 30 gün
+                    : DateTimeOffset.UtcNow.AddHours(8)   // Normal: 8 saat
             };
 
             await HttpContext.SignInAsync(

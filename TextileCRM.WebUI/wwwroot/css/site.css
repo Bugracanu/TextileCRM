@@ -20,3 +20,161 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Global Arama Stilleri - Kompakt */
+#globalSearch {
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.95);
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+#globalSearch:focus {
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#globalSearch::placeholder {
+    color: #aaa;
+    font-size: 0.85rem;
+}
+
+.input-group-sm .input-group-text {
+    border-radius: 15px 0 0 15px;
+    padding: 0.375rem 0.5rem;
+}
+
+.input-group-sm #globalSearch {
+    border-radius: 0 15px 15px 0;
+    padding: 0.375rem 0.5rem;
+}
+
+#searchResults {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    z-index: 1050;
+    max-height: 320px;
+    overflow-y: auto;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    width: 100%;
+}
+
+#searchResults .dropdown-item {
+    padding: 6px 10px;
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.8rem;
+}
+
+#searchResults .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+#searchResults .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+#searchResults .dropdown-item > div > div {
+    font-size: 0.85rem;
+}
+
+#searchResults .dropdown-item small {
+    font-size: 0.7rem;
+}
+
+#searchResults mark {
+    background-color: #fff3cd;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-weight: 500;
+}
+
+#searchResults .dropdown-header {
+    font-weight: 600;
+    font-size: 0.7rem;
+    padding: 5px 10px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+#searchResults .dropdown-header i {
+    font-size: 0.7rem;
+}
+
+#searchResults .dropdown-divider {
+    margin: 0;
+    border-color: #dee2e6;
+}
+
+#searchResults i.bi-arrow-right-circle {
+    font-size: 0.75rem;
+}
+
+/* Sonuç sayısı göstergesi */
+#searchResults .dropdown-item.text-center {
+    padding: 4px 10px;
+    font-size: 0.7rem;
+}
+
+
+/* Dropdown Çıkış Butonu Stilleri */
+.dropdown-menu form button.btn-link {
+    font-size: 1rem;
+}
+
+.dropdown-menu form button.btn-link:hover {
+    color: #dc3545 !important;
+}
+
+.dropdown-menu .dropdown-divider {
+    margin: 0.5rem 0;
+}
+
+/* Dropdown öğelerinin boyutlarını eşitle */
+.dropdown-menu .dropdown-item,
+.dropdown-menu form {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-menu form {
+    margin: 0;
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-menu form button.btn-link {
+    display: flex;
+    align-items: center;
+    min-height: auto;
+}
+
+.dropdown-menu .dropdown-item i,
+.dropdown-menu form button i {
+    width: 16px;
+    text-align: center;
+    margin-right: 0.5rem;
+}
+
+/* Dropdown öğelerinin hover durumu - hepsi aynı renk */
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu form:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+.dropdown-menu form:hover button {
+    color: #dc3545 !important;
+}

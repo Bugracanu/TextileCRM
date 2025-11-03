@@ -23,10 +23,33 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between align-items-center">
                     <ul class="navbar-nav flex-grow-1">
                     </ul>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <!-- Global Arama Kutusu -->
+                        <div class="mx-3" style="width: 280px; position: relative;">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="bi bi-search text-muted" style="font-size: 0.875rem;"></i>
+                                </span>
+                                <input type="text" id="globalSearch" class="form-control form-control-sm border-start-0 ps-0" 
+                                       placeholder="Ara..." 
+                                       style="box-shadow: none;">
+                            </div>
+                            <!-- Arama Sonuçları Dropdown -->
+                            <div id="searchResults" class="dropdown-menu" style="display: none;">
+                                <div id="searchContent">
+                                    <div class="text-center text-muted p-2" style="font-size: 0.8rem;">
+                                        <i class="bi bi-search" style="font-size: 0.875rem;"></i>
+                                        <p class="mb-0 mt-1">Ara...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     <div class="d-flex align-items-center">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <div class="dropdown me-3">
+                            <div class="dropdown">
                                 <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle"></i> @User.Identity.Name
                                 </a>
@@ -36,13 +59,16 @@
                                             <i class="bi bi-key"></i> Şifre Değiştir
                                         </a>
                                     </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Auth" asp-action="Logout" method="post">
+                                            <button type="submit" class="btn btn-link text-danger text-decoration-none p-0 w-100 text-start">
+                                                <i class="bi bi-box-arrow-right"></i> Çıkış
+                                            </button>
+                                        </form>
+                                    </li>
                                 </ul>
                             </div>
-                            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-outline-light btn-sm">
-                                    <i class="bi bi-box-arrow-right"></i> Çıkış
-                                </button>
-                            </form>
                         }
                     </div>
                 </div>

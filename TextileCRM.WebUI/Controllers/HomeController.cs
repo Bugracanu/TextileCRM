@@ -1,4 +1,6 @@
+using System;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TextileCRM.WebUI.Models;
@@ -49,6 +51,78 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GlobalSearch(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Length < 2)
+        {
+            return Json(new
+            {
+                customers = new object[] { },
+                orders = new object[] { },
+                products = new object[] { }
+            });
+        }
+
+        // Müşterilerde ara
+        var customers = await _customerService.GetAllCustomersAsync();
+        var customerResults = customers
+            .Where(c => c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                       c.CompanyName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                       c.ContactName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                       c.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                       c.Phone.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .Take(5)
+            .Select(c => new
+            {
+                id = c.Id,
+                name = c.Name,
+                email = c.Email
+            })
+            .ToList();
+
+        // Siparişlerde ara
+        var orders = await _orderService.GetAllOrdersAsync();
+        var orderResults = orders
+            .Where(o => o.Id.ToString().Contains(searchTerm) ||
+                       (o.Customer != null && o.Customer.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                       o.Notes.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .Take(5)
+            .Select(o => new
+            {
+                id = o.Id,
+                customerName = o.Customer != null ? o.Customer.Name : $"Müşteri #{o.CustomerId}",
+                status = o.Status.ToString(),
+                totalAmount = o.TotalAmount,
+                orderDate = o.OrderDate.ToShortDateString()
+            })
+            .ToList();
+
+        // Ürünlerde ara
+        var products = await _productService.GetAllProductsAsync();
+        var productResults = products
+            .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                       p.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                       p.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .Take(5)
+            .Select(p => new
+            {
+                id = p.Id,
+                name = p.Name,
+                code = p.Code,
+                unitPrice = p.UnitPrice,
+                stockQuantity = p.StockQuantity
+            })
+            .ToList();
+
+        return Json(new
+        {
+            customers = customerResults,
+            orders = orderResults,
+            products = productResults
+        });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
