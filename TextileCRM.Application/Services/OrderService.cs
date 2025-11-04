@@ -18,12 +18,14 @@ namespace TextileCRM.Application.Services
 
         public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
-            return await _orderRepository.GetAllAsync();
+            // Customer bilgilerini de yükle (eager loading)
+            return await _orderRepository.GetAllAsync("Customer", "OrderItems");
         }
 
         public async Task<Order?> GetOrderByIdAsync(int id)
         {
-            return await _orderRepository.GetByIdAsync(id);
+            // Customer ve OrderItems bilgilerini de yükle
+            return await _orderRepository.GetByIdAsync(id, "Customer", "OrderItems");
         }
 
         public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)

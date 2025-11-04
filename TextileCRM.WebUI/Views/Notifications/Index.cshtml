@@ -1,0 +1,126 @@
+@{
+    ViewData["Title"] = "Bildirimler";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1"><i class="bi bi-bell"></i> Bildirimler</h2>
+                    <p class="text-muted">Sistem bildirimleri ve güncellemeler</p>
+                </div>
+                <button class="btn btn-outline-secondary" onclick="markAllAsRead()">
+                    <i class="bi bi-check-all"></i> Tümünü Okundu İşaretle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bildirim Listesi -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div id="notificationsContainer">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="text-muted mt-2">Yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadNotifications() {
+            fetch('/api/notificationsapi/my-notifications')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('notificationsContainer');
+                    container.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center py-5">
+                                <i class="bi bi-inbox fs-1 text-muted"></i>
+                                <p class="text-muted mt-3">Henüz bildirim bulunmuyor</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    data.forEach(notification => {
+                        const typeIcons = {
+                            0: 'bi-info-circle text-info',
+                            1: 'bi-check-circle text-success',
+                            2: 'bi-exclamation-triangle text-warning',
+                            3: 'bi-x-circle text-danger',
+                            4: 'bi-cart3 text-primary',
+                            5: 'bi-credit-card text-success',
+                            6: 'bi-box text-warning',
+                            7: 'bi-gear text-secondary'
+                        };
+                        
+                        const priorityBadge = notification.priority === 3 ? 
+                            '<span class="badge bg-danger ms-2">ACİL</span>' : 
+                            notification.priority === 2 ? 
+                            '<span class="badge bg-warning ms-2">Yüksek</span>' : '';
+                        
+                        const card = document.createElement('div');
+                        card.className = `card mb-2 ${notification.isRead ? '' : 'border-primary'}`;
+                        card.innerHTML = `
+                            <div class="card-body py-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="me-3">
+                                            <i class="bi ${typeIcons[notification.type]} fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">
+                                                ${notification.title} ${priorityBadge}
+                                                ${!notification.isRead ? '<span class="badge bg-primary ms-2">Yeni</span>' : ''}
+                                            </h6>
+                                            <p class="mb-1">${notification.message}</p>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock"></i> ${new Date(notification.createdDate).toLocaleString('tr-TR')}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        ${!notification.isRead ? 
+                                            `<button class="btn btn-sm btn-outline-primary" onclick="markAsRead(${notification.id})">
+                                                <i class="bi bi-check"></i> Okundu
+                                            </button>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('notificationsContainer').innerHTML = 
+                        '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Veriler yüklenemedi</div>';
+                });
+        }
+        
+        function markAsRead(id) {
+            fetch(`/api/notificationsapi/${id}/mark-as-read`, { method: 'PATCH' })
+                .then(() => loadNotifications())
+                .catch(err => alert('İşlem başarısız'));
+        }
+        
+        function markAllAsRead() {
+            fetch('/api/notificationsapi/mark-all-as-read', { method: 'POST' })
+                .then(() => {
+                    alert('Tüm bildirimler okundu olarak işaretlendi');
+                    loadNotifications();
+                })
+                .catch(err => alert('İşlem başarısız'));
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadNotifications);
+    </script>
+}
+

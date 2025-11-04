@@ -1,42 +1,121 @@
 @model TextileCRM.Domain.Entities.Product
 
 @{
-    ViewData["Title"] = "Yeni Ürün";
+    ViewData["Title"] = "Yeni Ürün Ekle";
 }
 
 <div class="container">
-    <h1>Yeni Ürün</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <!-- Başlık Bölümü -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">
+                        <i class="bi bi-box-seam-fill text-info"></i> Yeni Ürün Ekle
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle"></i> Ürün bilgilerini doldurun
+                    </p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+            </div>
 
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <!-- Temel Bilgiler -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-box-fill text-info"></i> Temel Bilgiler
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Name" class="form-label fw-semibold">
+                                        <i class="bi bi-tag"></i> Ürün Adı <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Name" class="form-control" placeholder="Örn: Pamuklu Kumaş" required />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Category" class="form-label fw-semibold">
+                                        <i class="bi bi-collection"></i> Kategori <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="Category" class="form-control" asp-items="Html.GetEnumSelectList<TextileCRM.Domain.Entities.ProductCategory>()" required></select>
+                                    <span asp-validation-for="Category" class="text-danger"></span>
+                                </div>
+                            </div>
 
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-        </div>
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label fw-semibold">
+                                    <i class="bi bi-card-text"></i> Açıklama
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="3" 
+                                          placeholder="Ürün açıklaması..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
 
-        <div class="mb-3">
-            <label asp-for="Category" class="form-label"></label>
-            <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<TextileCRM.Domain.Entities.ProductCategory>()"></select>
-        </div>
+                        <!-- Fiyat ve Stok -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-currency-dollar text-info"></i> Fiyat ve Stok
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Price" class="form-label fw-semibold">
+                                        <i class="bi bi-cash"></i> Fiyat <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" required />
+                                        <span class="input-group-text">TL</span>
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="StockQuantity" class="form-label fw-semibold">
+                                        <i class="bi bi-box"></i> Stok Miktarı <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input asp-for="StockQuantity" class="form-control" type="number" min="0" placeholder="0" required />
+                                        <span class="input-group-text">adet</span>
+                                    </div>
+                                    <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="mb-3">
-            <label asp-for="Price" class="form-label"></label>
-            <input asp-for="Price" class="form-control" />
-        </div>
+                        <!-- Form Butonları -->
+                        <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> İptal
+                            </a>
+                            <button type="submit" class="btn btn-info btn-lg">
+                                <i class="bi bi-check-circle-fill"></i> Ürün Ekle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label asp-for="StockQuantity" class="form-label"></label>
-            <input asp-for="StockQuantity" class="form-control" />
+            <!-- Bilgilendirme Kartı -->
+            <div class="alert alert-info mt-3 d-flex align-items-start">
+                <i class="bi bi-lightbulb fs-4 me-3"></i>
+                <div>
+                    <strong>İpucu:</strong> Ürün ekledikten sonra siparişlerde kullanabilirsiniz.
+                </div>
+            </div>
         </div>
-
-        <div class="mt-3">
-            <button type="submit" class="btn btn-primary">Kaydet</button>
-            <a asp-action="Index" class="btn btn-secondary">Geri</a>
-        </div>
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

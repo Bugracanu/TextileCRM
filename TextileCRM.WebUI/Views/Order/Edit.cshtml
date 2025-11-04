@@ -5,57 +5,119 @@
 }
 
 <div class="container">
-    <h1>Sipariş Düzenle</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9">
+            <!-- Başlık Bölümü -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">
+                        <i class="bi bi-pencil-square text-success"></i> Sipariş Düzenle
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-hash"></i> Sipariş No: <strong>#@Model.Id</strong> | 
+                        <i class="bi bi-calendar"></i> Kayıt: <strong>@Model.CreatedDate.ToString("dd MMM yyyy")</strong>
+                    </p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+            </div>
 
-    <hr />
-    <div class="row">
-        <div class="col-md-8">
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="CreatedDate" />
-                
-                <div class="form-group mb-3">
-                    <label asp-for="CustomerId" class="control-label">Müşteri</label>
-                    <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers"></select>
-                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedDate" />
+                        
+                        <!-- Müşteri Bilgisi -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-person-fill text-success"></i> Müşteri Bilgisi
+                            </h5>
+                            <div class="form-group">
+                                <label asp-for="CustomerId" class="form-label fw-semibold">
+                                    <i class="bi bi-person"></i> Müşteri <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers" required></select>
+                                <span asp-validation-for="CustomerId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Tarih ve Durum Bilgileri -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-calendar-fill text-success"></i> Tarih ve Durum
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="OrderDate" class="form-label fw-semibold">
+                                        <i class="bi bi-calendar-check"></i> Sipariş Tarihi <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="OrderDate" class="form-control" type="date" required />
+                                    <span asp-validation-for="OrderDate" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="DeliveryDate" class="form-label fw-semibold">
+                                        <i class="bi bi-truck"></i> Teslim Tarihi
+                                    </label>
+                                    <input asp-for="DeliveryDate" class="form-control" type="date" />
+                                    <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Status" class="form-label fw-semibold">
+                                        <i class="bi bi-clipboard-check"></i> Durum <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<TextileCRM.Domain.Entities.OrderStatus>()" required></select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="TotalAmount" class="form-label fw-semibold">
+                                        <i class="bi bi-currency-dollar"></i> Toplam Tutar <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input asp-for="TotalAmount" class="form-control" type="number" step="0.01" required />
+                                        <span class="input-group-text">TL</span>
+                                    </div>
+                                    <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notlar -->
+                        <div class="mb-4">
+                            <label asp-for="Notes" class="form-label fw-semibold">
+                                <i class="bi bi-sticky"></i> Notlar
+                            </label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Sipariş hakkında notlar..."></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <!-- Form Butonları -->
+                        <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> İptal
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-save-fill"></i> Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="OrderDate" class="control-label">Sipariş Tarihi</label>
-                    <input asp-for="OrderDate" class="form-control" type="date" />
-                    <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+
+            <!-- Bilgilendirme Kartı -->
+            <div class="alert alert-warning mt-3 d-flex align-items-start">
+                <i class="bi bi-exclamation-triangle fs-4 me-3"></i>
+                <div>
+                    <strong>Dikkat:</strong> Sipariş bilgilerini değiştirmek, ilgili tüm kayıtları etkileyebilir.
                 </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="DeliveryDate" class="control-label">Teslim Tarihi</label>
-                    <input asp-for="DeliveryDate" class="form-control" type="date" />
-                    <span asp-validation-for="DeliveryDate" class="text-danger"></span>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="Status" class="control-label">Durum</label>
-                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<TextileCRM.Domain.Entities.OrderStatus>()"></select>
-                    <span asp-validation-for="Status" class="text-danger"></span>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="TotalAmount" class="control-label">Toplam Tutar</label>
-                    <input asp-for="TotalAmount" class="form-control" type="number" step="0.01" />
-                    <span asp-validation-for="TotalAmount" class="text-danger"></span>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="Notes" class="control-label">Notlar</label>
-                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Notes" class="text-danger"></span>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <input type="submit" value="Kaydet" class="btn btn-primary" />
-                    <a asp-action="Index" class="btn btn-secondary">İptal</a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -63,4 +125,3 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-

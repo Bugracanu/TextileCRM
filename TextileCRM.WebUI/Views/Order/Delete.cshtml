@@ -5,40 +5,113 @@
 }
 
 <div class="container">
-    <h1>Sipariş Sil</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <!-- Başlık Bölümü -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">
+                        <i class="bi bi-trash text-danger"></i> Sipariş Sil
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-hash"></i> Sipariş No: <strong>#@Model.Id</strong>
+                    </p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+            </div>
 
-    <h3 class="text-danger">Bu siparişi silmek istediğinizden emin misiniz?</h3>
-    <div class="card mb-3">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Sipariş No</dt>
-                <dd class="col-sm-9">@Model.Id</dd>
+            <!-- Uyarı Mesajı -->
+            <div class="alert alert-danger d-flex align-items-start mb-4">
+                <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+                <div>
+                    <h5 class="alert-heading mb-2">Dikkat! Bu işlem geri alınamaz</h5>
+                    <p class="mb-0">Bu siparişi silmek istediğinize emin misiniz? İlişkili tüm veriler de silinecektir.</p>
+                </div>
+            </div>
 
-                <dt class="col-sm-3">Müşteri</dt>
-                <dd class="col-sm-9">@(Model.Customer?.CompanyName ?? ($"Müşteri #{Model.CustomerId}"))</dd>
+            <!-- Sipariş Bilgileri -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cart-fill text-success"></i> Silinecek Sipariş Bilgileri
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-hash"></i> Sipariş No</label>
+                                <p class="fw-bold mb-0">#@Model.Id</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-person"></i> Müşteri</label>
+                                <p class="fw-bold mb-0">@(Model.Customer?.Name ?? Model.Customer?.CompanyName ?? $"Müşteri #{Model.CustomerId}")</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <dt class="col-sm-3">Sipariş Tarihi</dt>
-                <dd class="col-sm-9">@Model.OrderDate.ToShortDateString()</dd>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-calendar-check"></i> Sipariş Tarihi</label>
+                                <p class="fw-bold mb-0">@Model.OrderDate.ToString("dd MMMM yyyy")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-truck"></i> Teslim Tarihi</label>
+                                <p class="fw-bold mb-0">@(Model.DeliveryDate?.ToString("dd MMMM yyyy") ?? "-")</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <dt class="col-sm-3">Teslim Tarihi</dt>
-                <dd class="col-sm-9">@(Model.DeliveryDate?.ToShortDateString() ?? "-")</dd>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-clipboard-check"></i> Durum</label>
+                                <p class="fw-bold mb-0">
+                                    <span class="badge @(Model.Status == TextileCRM.Domain.Entities.OrderStatus.Completed ? "bg-success" : 
+                                                        Model.Status == TextileCRM.Domain.Entities.OrderStatus.InProduction ? "bg-warning text-dark" : 
+                                                        Model.Status == TextileCRM.Domain.Entities.OrderStatus.Cancelled ? "bg-danger" : "bg-info")">
+                                        @Model.Status
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-currency-dollar"></i> Toplam Tutar</label>
+                                <p class="fw-bold mb-0 text-success fs-5">@Model.TotalAmount.ToString("C")</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <dt class="col-sm-3">Durum</dt>
-                <dd class="col-sm-9">@Model.Status</dd>
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="mb-0">
+                            <label class="text-muted mb-1"><i class="bi bi-sticky"></i> Notlar</label>
+                            <p class="fw-bold mb-0">@Model.Notes</p>
+                        </div>
+                    }
+                </div>
+            </div>
 
-                <dt class="col-sm-3">Toplam Tutar</dt>
-                <dd class="col-sm-9">@Model.TotalAmount.ToString("C")</dd>
-
-                <dt class="col-sm-3">Notlar</dt>
-                <dd class="col-sm-9">@Model.Notes</dd>
-            </dl>
+            <!-- Form Butonları -->
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex gap-2 justify-content-end">
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-x-circle"></i> İptal Et
+                    </a>
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="bi bi-trash-fill"></i> Evet, Siparişi Sil
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Sil</button>
-        <a asp-action="Index" class="btn btn-secondary">İptal</a>
-    </form>
 </div>
-

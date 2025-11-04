@@ -30,16 +30,6 @@ namespace TextileCRM.WebUI.Controllers
             return View(orders);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return View(order);
-        }
-
         public async Task<IActionResult> Create()
         {
             await PopulateCustomerDropdown();
@@ -88,7 +78,7 @@ namespace TextileCRM.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 await _orderService.UpdateOrderAsync(order);
-                return RedirectToAction(nameof(Details), new { id = order.Id });
+                return RedirectToAction(nameof(Index));
             }
             await PopulateCustomerDropdown();
             return View(order);
@@ -116,13 +106,27 @@ namespace TextileCRM.WebUI.Controllers
         public async Task<IActionResult> UpdateStatus(int id, TextileCRM.Domain.Entities.OrderStatus status)
         {
             await _orderService.UpdateOrderStatusAsync(id, status);
-            return RedirectToAction(nameof(Details), new { id });
+            return RedirectToAction(nameof(Index));
         }
 
         private async Task PopulateCustomerDropdown()
         {
             var customers = await _customerService.GetAllCustomersAsync();
             ViewBag.Customers = new SelectList(customers, "Id", "Name");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
+        {
+            var products = await _productService.GetAllProductsAsync();
+            var productList = products.Select(p => new
+            {
+                id = p.Id,
+                name = p.Name,
+                unitPrice = p.UnitPrice,
+                stockQuantity = p.StockQuantity
+            });
+            return Json(productList);
         }
 
         public async Task<IActionResult> AddItem(int orderId)
@@ -147,7 +151,7 @@ namespace TextileCRM.WebUI.Controllers
 
                 order.OrderItems.Add(orderItem);
                 await _orderService.UpdateOrderAsync(order);
-                return RedirectToAction(nameof(Details), new { id = orderItem.OrderId });
+                return RedirectToAction(nameof(Index));
             }
 
             var products = await _productService.GetAllProductsAsync();

@@ -1,0 +1,129 @@
+==========================================================
+TEXTILE CRM - DATABASE MIGRATION KOMUTLARI
+==========================================================
+
+ÖNEMLİ NOT: Uygulamayı durdurup migration işlemlerini yapın!
+
+----------------------------------------------------------
+1. MIGRATION OLUŞTURMA
+----------------------------------------------------------
+
+cd TextileCRM.Infrastructure
+
+dotnet ef migrations add AddInvoicePaymentFileNotificationStockAlerts --startup-project ../TextileCRM.WebUI --context AppDbContext
+
+VEYA (kök dizinden):
+
+dotnet ef migrations add AddInvoicePaymentFileNotificationStockAlerts --project TextileCRM.Infrastructure --startup-project TextileCRM.WebUI --context AppDbContext
+
+
+----------------------------------------------------------
+2. DATABASE GÜNCELLEME
+----------------------------------------------------------
+
+cd TextileCRM.Infrastructure
+
+dotnet ef database update --startup-project ../TextileCRM.WebUI --context AppDbContext
+
+VEYA (kök dizinden):
+
+dotnet ef database update --project TextileCRM.Infrastructure --startup-project TextileCRM.WebUI --context AppDbContext
+
+
+----------------------------------------------------------
+3. SON MIGRATION'I GERİ ALMA (gerekirse)
+----------------------------------------------------------
+
+dotnet ef migrations remove --startup-project ../TextileCRM.WebUI --context AppDbContext
+
+
+----------------------------------------------------------
+4. MIGRATION LİSTESİNİ GÖRÜNTÜLEME
+----------------------------------------------------------
+
+dotnet ef migrations list --startup-project ../TextileCRM.WebUI --context AppDbContext
+
+
+----------------------------------------------------------
+5. DATABASE'İ SİLİP YENİDEN OLUŞTURMA (TEHLİKELİ!)
+----------------------------------------------------------
+
+dotnet ef database drop --startup-project ../TextileCRM.WebUI --context AppDbContext
+dotnet ef database update --startup-project ../TextileCRM.WebUI --context AppDbContext
+
+
+==========================================================
+YENİ EKLENEN TABLOLAR
+==========================================================
+
+1. Invoices (Faturalar)
+   - Id, InvoiceNumber, OrderId, CustomerId
+   - InvoiceDate, DueDate, Subtotal, TaxAmount
+   - DiscountAmount, TotalAmount, Status, Notes
+   - CreatedDate, PaidDate
+
+2. Payments (Ödemeler)
+   - Id, InvoiceId, PaymentReference
+   - PaymentDate, Amount, PaymentMethod
+   - Status, Notes, TransactionId, CreatedDate
+
+3. FileAttachments (Dosya Ekleri)
+   - Id, FileName, OriginalFileName, FilePath
+   - FileExtension, FileSize, ContentType, Category
+   - EntityType, EntityId, Description
+   - UploadedBy, UploadedDate
+
+4. Notifications (Bildirimler)
+   - Id, UserId, Title, Message
+   - Type, Priority, IsRead, Link
+   - EntityType, EntityId
+   - CreatedDate, ReadDate
+
+5. StockAlerts (Stok Uyarıları)
+   - Id, ProductId, CurrentQuantity, ThresholdQuantity
+   - AlertType, Status
+   - CreatedDate, ResolvedDate, ResolvedBy, Notes
+
+
+==========================================================
+UYGULAMA ÇALIŞTIRMA
+==========================================================
+
+cd TextileCRM.WebUI
+
+dotnet run
+
+
+Swagger UI: https://localhost:{port}/api-docs
+Ana Sayfa: https://localhost:{port}
+
+
+==========================================================
+SORUN GİDERME
+==========================================================
+
+SORUN: "There is already an object named..."
+ÇÖZÜM: Database'i drop edip yeniden oluşturun (yukarıdaki komut 5)
+
+SORUN: "Build failed"
+ÇÖZÜM: Önce tüm projeyi build edin:
+       dotnet build
+
+SORUN: "No DbContext was found"
+ÇÖZÜM: --context AppDbContext parametresini ekleyin
+
+SORUN: "Unable to create an object of type 'AppDbContext'"
+ÇÖZÜM: appsettings.json'da connection string'i kontrol edin
+
+
+==========================================================
+BAŞARIYLA TAMAMLANDI! 🎉
+==========================================================
+
+Toplam: 113+ API Endpoint
+        5 Yeni Entity
+        6 Yeni Service
+        6 Yeni API Controller
+
+İyi çalışmalar! 🚀
+

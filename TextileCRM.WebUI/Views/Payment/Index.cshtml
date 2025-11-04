@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Ödemeler";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1"><i class="bi bi-credit-card"></i> Ödemeler</h2>
+                    <p class="text-muted">Tüm ödeme kayıtlarını görüntüleyin ve yönetin</p>
+                </div>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createPaymentModal">
+                    <i class="bi bi-plus-circle"></i> Yeni Ödeme
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ödemeler Tablosu -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Referans No</th>
+                            <th>Fatura No</th>
+                            <th>Ödeme Tarihi</th>
+                            <th>Tutar</th>
+                            <th>Yöntem</th>
+                            <th>Durum</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="spinner-border text-success" role="status"></div>
+                                <p class="text-muted mt-2">Yükleniyor...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadPayments() {
+            fetch('/api/paymentsapi')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('paymentsTableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Ödeme bulunamadı</td></tr>';
+                        return;
+                    }
+                    
+                    data.forEach(payment => {
+                        const methodMap = ['Nakit', 'Kredi Kartı', 'Banka Transferi', 'Çek', 'Havale/EFT', 'Diğer'];
+                        const statusMap = ['Beklemede', 'İşleniyor', 'Tamamlandı', 'Başarısız', 'İade'];
+                        const statusColorMap = ['warning', 'info', 'success', 'danger', 'secondary'];
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><strong>${payment.paymentReference}</strong></td>
+                            <td>Fatura #${payment.invoiceId}</td>
+                            <td>${new Date(payment.paymentDate).toLocaleDateString('tr-TR')}</td>
+                            <td><strong>₺${payment.amount.toLocaleString('tr-TR')}</strong></td>
+                            <td>${methodMap[payment.paymentMethod]}</td>
+                            <td><span class="badge bg-${statusColorMap[payment.status]}">${statusMap[payment.status]}</span></td>
+                            <td class="text-center">
+                                ${payment.status === 0 ? 
+                                    `<button class="btn btn-sm btn-success" onclick="processPayment(${payment.id})">
+                                        <i class="bi bi-check-circle"></i> İşle
+                                    </button>` : 
+                                    `<button class="btn btn-sm btn-outline-primary" onclick="viewPayment(${payment.id})">
+                                        <i class="bi bi-eye"></i>
+                                    </button>`
+                                }
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('paymentsTableBody').innerHTML = 
+                        '<tr><td colspan="7" class="text-center py-4 text-danger">Veri yüklenemedi</td></tr>';
+                });
+        }
+        
+        function processPayment(id) {
+            if (confirm('Ödemeyi işlemek istediğinizden emin misiniz?')) {
+                fetch(`/api/paymentsapi/${id}/process`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert('Ödeme başarıyla işlendi!');
+                        loadPayments();
+                    })
+                    .catch(err => alert('Ödeme işlenemedi'));
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadPayments);
+    </script>
+}
+

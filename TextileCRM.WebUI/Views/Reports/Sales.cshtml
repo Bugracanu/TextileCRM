@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Satış Raporları";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1"><i class="bi bi-graph-up"></i> Satış Raporları</h2>
+            <p class="text-muted">Detaylı satış analizi ve trendler</p>
+        </div>
+    </div>
+
+    <!-- Tarih Filtresi -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <input type="date" id="startDate" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <input type="date" id="endDate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" onclick="loadSalesReport()">
+                <i class="bi bi-search"></i> Filtrele
+            </button>
+        </div>
+    </div>
+
+    <!-- Satış Özeti -->
+    <div class="row g-3 mb-4" id="salesSummary">
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="text-muted mt-2">Yükleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Aylık Trend Grafiği -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Aylık Satış Trendi</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlySalesChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadSalesReport() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const url = `/api/reportsapi/financial/summary?startDate=${startDate || ''}&endDate=${endDate || ''}`;
+            
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('salesSummary');
+                    container.innerHTML = `
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6 class="text-muted mb-2">Toplam Gelir</h6>
+                                <h2 class="text-success">₺${data.summary.totalRevenue.toLocaleString('tr-TR')}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6 class="text-muted mb-2">Toplam Sipariş</h6>
+                                <h2 class="text-primary">${data.summary.totalOrders}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6 class="text-muted mb-2">Ortalama Sipariş</h6>
+                                <h2 class="text-info">₺${data.summary.averageOrderValue.toLocaleString('tr-TR')}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6 class="text-muted mb-2">Tamamlanma Oranı</h6>
+                                <h2 class="text-warning">${data.summary.completionRate.toFixed(1)}%</h2>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(err => console.error(err));
+        }
+        
+        // Set default dates (last 30 days)
+        document.addEventListener('DOMContentLoaded', function() {
+            const end = new Date();
+            const start = new Date();
+            start.setDate(start.getDate() - 30);
+            
+            document.getElementById('startDate').valueAsDate = start;
+            document.getElementById('endDate').valueAsDate = end;
+            
+            loadSalesReport();
+        });
+    </script>
+}
+

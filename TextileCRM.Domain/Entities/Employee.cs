@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TextileCRM.Domain.Entities;
 
@@ -19,18 +21,38 @@ public class Employee
     public DateTime CreatedDate { get; set; }
     
     // Navigation properties
+    [JsonIgnore]
     public ICollection<WorkLog> WorkLogs { get; set; } = new List<WorkLog>();
+    
+    public string FullName => $"{FirstName} {LastName}";
 }
 
 public enum Department
 {
+    [Display(Name = "Yönetim")]
     Management,
+    
+    [Display(Name = "Satış")]
     Sales,
+    
+    [Display(Name = "Üretim")]
     Production,
+    
+    [Display(Name = "Kesim")]
     Cutting,
+    
+    [Display(Name = "Dikiş")]
     Sewing,
+    
+    [Display(Name = "Paketleme")]
     Packaging,
+    
+    [Display(Name = "Depo")]
     Warehouse,
+    
+    [Display(Name = "Muhasebe")]
     Accounting,
+    
+    [Display(Name = "İnsan Kaynakları")]
     HumanResources
 }

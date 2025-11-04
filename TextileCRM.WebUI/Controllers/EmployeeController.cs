@@ -22,16 +22,6 @@ namespace TextileCRM.WebUI.Controllers
             return View(employees);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var employee = await _employeeService.GetEmployeeByIdAsync(id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-            return View(employee);
-        }
-
         public IActionResult Create()
         {
             return View();
@@ -42,6 +32,7 @@ namespace TextileCRM.WebUI.Controllers
         public async Task<IActionResult> Create(Employee employee)
         {
             ModelState.Remove("WorkLogs");
+            ModelState.Remove("FullName");
 
             if (ModelState.IsValid)
             {
@@ -71,6 +62,7 @@ namespace TextileCRM.WebUI.Controllers
             }
 
             ModelState.Remove("WorkLogs");
+            ModelState.Remove("FullName");
 
             if (ModelState.IsValid)
             {

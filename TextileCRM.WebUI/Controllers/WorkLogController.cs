@@ -28,16 +28,6 @@ namespace TextileCRM.WebUI.Controllers
             return View(workLogs);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var workLog = await _workLogService.GetWorkLogByIdAsync(id);
-            if (workLog == null)
-            {
-                return NotFound();
-            }
-            return View(workLog);
-        }
-
         public async Task<IActionResult> Create()
         {
             await PopulateEmployeeDropdown();

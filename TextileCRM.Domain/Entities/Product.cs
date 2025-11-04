@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace TextileCRM.Domain.Entities;
 
 public class Product
@@ -13,16 +16,30 @@ public class Product
     public decimal Price { get; set; }
     
     // Navigation properties
+    [JsonIgnore]
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
 
 public enum ProductCategory
 {
+    [Display(Name = "Kumaş")]
     Fabric,
+    
+    [Display(Name = "İplik")]
     Thread,
+    
+    [Display(Name = "Düğme")]
     Button,
+    
+    [Display(Name = "Fermuar")]
     Zipper,
+    
+    [Display(Name = "Aksesuar")]
     Accessory,
+    
+    [Display(Name = "Bitmiş Ürün")]
     FinishedProduct,
+    
+    [Display(Name = "Diğer")]
     Other
 }

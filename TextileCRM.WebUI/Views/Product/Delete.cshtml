@@ -5,37 +5,113 @@
 }
 
 <div class="container">
-    <h1>Ürün Sil</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <!-- Başlık Bölümü -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">
+                        <i class="bi bi-trash text-danger"></i> Ürün Sil
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-hash"></i> Ürün ID: <strong>@Model.Id</strong>
+                    </p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+            </div>
 
-    <h3 class="text-danger">Bu ürünü silmek istediğinizden emin misiniz?</h3>
-    <div class="card mb-3">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">ID</dt>
-                <dd class="col-sm-9">@Model.Id</dd>
+            <!-- Uyarı Mesajı -->
+            <div class="alert alert-danger d-flex align-items-start mb-4">
+                <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+                <div>
+                    <h5 class="alert-heading mb-2">Dikkat! Bu işlem geri alınamaz</h5>
+                    <p class="mb-0">Bu ürünü silmek istediğinize emin misiniz? İlişkili tüm veriler de silinecektir.</p>
+                </div>
+            </div>
 
-                <dt class="col-sm-3">Ürün Adı</dt>
-                <dd class="col-sm-9">@Model.Name</dd>
+            <!-- Ürün Bilgileri -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-box-seam-fill text-info"></i> Silinecek Ürün Bilgileri
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-tag"></i> Ürün Adı</label>
+                                <p class="fw-bold mb-0">@Model.Name</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-upc-scan"></i> Ürün Kodu</label>
+                                <p class="fw-bold mb-0">@Model.Code</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <dt class="col-sm-3">Ürün Kodu</dt>
-                <dd class="col-sm-9">@Model.Code</dd>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-collection"></i> Kategori</label>
+                                <p class="fw-bold mb-0">
+                                    <span class="badge bg-light text-dark">@Model.Category</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-box"></i> Stok Miktarı</label>
+                                <p class="fw-bold mb-0">
+                                    <span class="badge @(Model.StockQuantity > 10 ? "bg-success" : Model.StockQuantity > 0 ? "bg-warning text-dark" : "bg-danger")">
+                                        @Model.StockQuantity adet
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-                <dt class="col-sm-3">Kategori</dt>
-                <dd class="col-sm-9">@Model.Category</dd>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-cash"></i> Fiyat</label>
+                                <p class="fw-bold mb-0 text-success fs-5">@Model.Price.ToString("C")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="text-muted mb-1"><i class="bi bi-currency-dollar"></i> Birim Fiyat</label>
+                                <p class="fw-bold mb-0">@Model.UnitPrice.ToString("C")</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <dt class="col-sm-3">Fiyat</dt>
-                <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mb-0">
+                            <label class="text-muted mb-1"><i class="bi bi-card-text"></i> Açıklama</label>
+                            <p class="fw-bold mb-0">@Model.Description</p>
+                        </div>
+                    }
+                </div>
+            </div>
 
-                <dt class="col-sm-3">Stok Miktarı</dt>
-                <dd class="col-sm-9">@Model.StockQuantity</dd>
-            </dl>
+            <!-- Form Butonları -->
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex gap-2 justify-content-end">
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-x-circle"></i> İptal Et
+                    </a>
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="bi bi-trash-fill"></i> Evet, Ürünü Sil
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Sil</button>
-        <a asp-action="Index" class="btn btn-secondary">İptal</a>
-    </form>
 </div>
-

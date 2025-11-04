@@ -1,0 +1,111 @@
+@{
+    ViewData["Title"] = "Finansal Raporlar";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1"><i class="bi bi-currency-dollar"></i> Finansal Raporlar</h2>
+            <p class="text-muted">Kar/zarar, nakit akışı ve finansal analizler</p>
+        </div>
+    </div>
+
+    <!-- Kar/Zarar Raporu -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-calculator"></i> Kar/Zarar Raporu</h5>
+                </div>
+                <div class="card-body" id="profitLossReport">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nakit Akışı -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-cash-stack"></i> Nakit Akışı (Son 6 Ay)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="cashFlowChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadProfitLoss() {
+            fetch('/api/reportsapi/financial/profit-loss')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('profitLossReport').innerHTML = `
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h6 class="text-muted mb-2">Toplam Gelir</h6>
+                                    <h3 class="text-success mb-0">₺${data.revenue.toLocaleString('tr-TR')}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h6 class="text-muted mb-2">Toplam Maliyet</h6>
+                                    <h3 class="text-danger mb-0">₺${data.costs.total.toLocaleString('tr-TR')}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h6 class="text-muted mb-2">Brüt Kar</h6>
+                                    <h3 class="text-primary mb-0">₺${data.grossProfit.toLocaleString('tr-TR')}</h3>
+                                    <small class="text-muted">Kar Marjı: ${data.profitMargin}%</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(err => console.error(err));
+        }
+        
+        function loadCashFlow() {
+            fetch('/api/reportsapi/financial/cash-flow?months=6')
+                .then(res => res.json())
+                .then(data => {
+                    const ctx = document.getElementById('cashFlowChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.monthlyCashFlow.map(m => m.monthName),
+                            datasets: [{
+                                label: 'Gelir',
+                                data: data.monthlyCashFlow.map(m => m.inflow),
+                                backgroundColor: 'rgba(16, 185, 129, 0.6)'
+                            }, {
+                                label: 'Bekleyen',
+                                data: data.monthlyCashFlow.map(m => m.pending),
+                                backgroundColor: 'rgba(245, 158, 11, 0.6)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true
+                        }
+                    });
+                })
+                .catch(err => console.error(err));
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfitLoss();
+            loadCashFlow();
+        });
+    </script>
+}
+

@@ -1,0 +1,171 @@
+@{
+    ViewData["Title"] = "Müşteri Analizleri";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1"><i class="bi bi-people"></i> Müşteri Analizleri</h2>
+            <p class="text-muted">Müşteri segmentasyonu ve yaşam boyu değer analizi</p>
+        </div>
+    </div>
+
+    <!-- Müşteri Segmentasyonu -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Müşteri Segmentasyonu</h5>
+                </div>
+                <div class="card-body" id="segmentationReport">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CLV Analizi -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-gem"></i> En Değerli Müşteriler (CLV)</h5>
+                </div>
+                <div class="card-body" id="clvReport">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Churn Analizi -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Müşteri Kayıp (Churn) Analizi</h5>
+                </div>
+                <div class="card-body" id="churnReport">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-warning" role="status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadSegmentation() {
+            fetch('/api/reportsapi/customers/segmentation')
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<div class="list-group list-group-flush">';
+                    data.segmentSummary.forEach(segment => {
+                        html += `
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">${segment.segment}</h6>
+                                        <small class="text-muted">${segment.customerCount} müşteri</small>
+                                    </div>
+                                    <strong class="text-success">₺${segment.totalRevenue.toLocaleString('tr-TR')}</strong>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    document.getElementById('segmentationReport').innerHTML = html;
+                })
+                .catch(err => console.error(err));
+        }
+        
+        function loadCLV() {
+            fetch('/api/reportsapi/customers/lifetime-value')
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<div class="list-group list-group-flush">';
+                    data.topCustomers.slice(0, 10).forEach((customer, index) => {
+                        html += `
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-${index < 3 ? 'warning' : 'secondary'} me-2">#${index + 1}</span>
+                                        <strong>${customer.customerName}</strong>
+                                        <p class="mb-0 small text-muted">${customer.orderCount} sipariş</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <strong class="text-success d-block">₺${customer.estimatedCLV.toLocaleString('tr-TR')}</strong>
+                                        <small class="text-muted">Tahmini CLV</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    document.getElementById('clvReport').innerHTML = html;
+                })
+                .catch(err => console.error(err));
+        }
+        
+        function loadChurn() {
+            fetch('/api/reportsapi/customers/churn-analysis')
+                .then(res => res.json())
+                .then(data => {
+                    let html = `
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-success bg-opacity-10 rounded">
+                                    <h4 class="text-success mb-1">${data.summary.activeCount}</h4>
+                                    <small class="text-muted">Aktif Müşteri</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-warning bg-opacity-10 rounded">
+                                    <h4 class="text-warning mb-1">${data.summary.warningCount}</h4>
+                                    <small class="text-muted">Uyarı Durumunda</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-danger bg-opacity-10 rounded">
+                                    <h4 class="text-danger mb-1">${data.summary.atRiskCount}</h4>
+                                    <small class="text-muted">Risk Altında</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    if (data.atRiskCustomers.length > 0) {
+                        html += '<h6 class="mb-3">Risk Altındaki Müşteriler:</h6><div class="list-group">';
+                        data.atRiskCustomers.slice(0, 5).forEach(customer => {
+                            html += `
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>${customer.customerName}</strong>
+                                            <p class="mb-0 small text-muted">${customer.daysSinceLastOrder} gün önce son sipariş</p>
+                                        </div>
+                                        <span class="badge bg-danger">${customer.totalOrders} sipariş</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    document.getElementById('churnReport').innerHTML = html;
+                })
+                .catch(err => console.error(err));
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSegmentation();
+            loadCLV();
+            loadChurn();
+        });
+    </script>
+}
+

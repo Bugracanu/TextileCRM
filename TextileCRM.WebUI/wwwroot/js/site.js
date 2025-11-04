@@ -71,7 +71,7 @@ $(document).ready(function () {
         if (data.customers.length > 0) {
             html += '<h6 class="dropdown-header"><i class="bi bi-people-fill"></i> Müşteriler</h6>';
             data.customers.slice(0, 3).forEach(function (customer) {
-                html += `<a class="dropdown-item" href="/Customer/Details/${customer.id}">
+                html += `<a class="dropdown-item" href="/Customer/Edit/${customer.id}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div style="flex: 1; min-width: 0;">
                                     <div style="font-weight: 500;">${highlightText(customer.name, searchTerm)}</div>
@@ -93,7 +93,7 @@ $(document).ready(function () {
             html += '<h6 class="dropdown-header"><i class="bi bi-box-seam"></i> Siparişler</h6>';
             data.orders.slice(0, 3).forEach(function (order) {
                 const statusBadge = getOrderStatusBadge(order.status);
-                html += `<a class="dropdown-item" href="/Order/Details/${order.id}">
+                html += `<a class="dropdown-item" href="/Order/Edit/${order.id}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div style="flex: 1; min-width: 0;">
                                     <div style="font-weight: 500;">#${order.id} - ${highlightText(order.customerName, searchTerm)}</div>
@@ -114,7 +114,7 @@ $(document).ready(function () {
         if (data.products.length > 0) {
             html += '<h6 class="dropdown-header"><i class="bi bi-tag-fill"></i> Ürünler</h6>';
             data.products.slice(0, 3).forEach(function (product) {
-                html += `<a class="dropdown-item" href="/Product/Details/${product.id}">
+                html += `<a class="dropdown-item" href="/Product/Edit/${product.id}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div style="flex: 1; min-width: 0;">
                                     <div style="font-weight: 500;">${highlightText(product.name, searchTerm)}</div>
@@ -141,14 +141,14 @@ $(document).ready(function () {
 
     function getOrderStatusBadge(status) {
         const badges = {
+            'New': '<span class="badge bg-info" style="font-size: 0.65rem;">Yeni</span>',
             'Pending': '<span class="badge bg-warning text-dark" style="font-size: 0.65rem;">Beklemede</span>',
+            'Confirmed': '<span class="badge bg-success" style="font-size: 0.65rem;">Onaylandı</span>',
+            'Processing': '<span class="badge bg-secondary" style="font-size: 0.65rem;">İşleniyor</span>',
             'InProduction': '<span class="badge bg-info" style="font-size: 0.65rem;">Üretimde</span>',
             'Completed': '<span class="badge bg-success" style="font-size: 0.65rem;">Tamamlandı</span>',
-            'Delivered': '<span class="badge bg-primary" style="font-size: 0.65rem;">Teslim</span>',
-            'Cancelled': '<span class="badge bg-danger" style="font-size: 0.65rem;">İptal</span>',
-            'Processing': '<span class="badge bg-secondary" style="font-size: 0.65rem;">İşleniyor</span>',
-            'Confirmed': '<span class="badge bg-success" style="font-size: 0.65rem;">Onaylandı</span>',
-            'New': '<span class="badge bg-info" style="font-size: 0.65rem;">Yeni</span>'
+            'Delivered': '<span class="badge bg-primary" style="font-size: 0.65rem;">Teslim Edildi</span>',
+            'Cancelled': '<span class="badge bg-danger" style="font-size: 0.65rem;">İptal Edildi</span>'
         };
         return badges[status] || `<span class="badge bg-secondary" style="font-size: 0.65rem;">${status}</span>`;
     }

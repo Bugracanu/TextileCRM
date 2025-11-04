@@ -12,9 +12,12 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom box-shadow mb-3">
-            <div class="container d-flex align-items-center">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-building"></i> Tekstil CRM
+            <div class="container-fluid px-4">
+                <a class="navbar-brand d-flex align-items-center me-auto" asp-area="" asp-controller="Home" asp-action="Index">
+                    <div class="logo-container me-3">
+                        <img src="~/images/logo.svg" alt="Tekstil CRM Logo" class="navbar-logo" />
+                    </div>
+                    <span class="brand-text">Tekstil CRM</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +62,15 @@
                                             <i class="bi bi-key"></i> Şifre Değiştir
                                         </a>
                                     </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="User" asp-action="Index">
+                                                <i class="bi bi-people-fill"></i> Kullanıcı Yönetimi
+                                            </a>
+                                        </li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="Auth" asp-action="Logout" method="post">
@@ -75,18 +87,179 @@
             </div>
         </nav>
     </header>
-    <main role="main" class="pb-3 pt-0">
-        @RenderBody()
-    </main>
+    
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <!-- Sidebar Navigation -->
+        <div class="d-flex" style="min-height: calc(100vh - 140px);">
+            <nav class="sidebar bg-light border-end" style="width: 250px; position: sticky; top: 0; height: calc(100vh - 70px); overflow-y: auto;">
+                <div class="p-3">
+                    <h6 class="text-muted text-uppercase mb-3" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px;">Menü</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Customer" asp-action="Index">
+                                <i class="bi bi-people me-2"></i> Müşteriler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Order" asp-action="Index">
+                                <i class="bi bi-cart3 me-2"></i> Siparişler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Product" asp-action="Index">
+                                <i class="bi bi-box-seam me-2"></i> Ürünler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Employee" asp-action="Index">
+                                <i class="bi bi-person-badge me-2"></i> Çalışanlar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="WorkLog" asp-action="Index">
+                                <i class="bi bi-clock-history me-2"></i> Mesai Kayıtları
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="my-3">
+                    <h6 class="text-muted text-uppercase mb-3" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px;">Finans</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Invoice">
+                                <i class="bi bi-receipt me-2"></i> Faturalar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Payment">
+                                <i class="bi bi-credit-card me-2"></i> Ödemeler
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="my-3">
+                    <h6 class="text-muted text-uppercase mb-3" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px;">Sistem</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Notifications">
+                                <i class="bi bi-bell me-2"></i> Bildirimler
+                                <span id="notificationBadge" class="badge bg-danger rounded-pill ms-2" style="display: none;">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/StockAlerts">
+                                <i class="bi bi-exclamation-triangle me-2"></i> Stok Uyarıları
+                                <span id="stockAlertBadge" class="badge bg-warning text-dark rounded-pill ms-2" style="display: none;">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Files">
+                                <i class="bi bi-folder me-2"></i> Dosyalar
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="my-3">
+                    <h6 class="text-muted text-uppercase mb-3" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px;">Raporlar</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Reports/Sales">
+                                <i class="bi bi-graph-up me-2"></i> Satış Raporları
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Reports/Financial">
+                                <i class="bi bi-currency-dollar me-2"></i> Finansal Raporlar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Reports/Customers">
+                                <i class="bi bi-people me-2"></i> Müşteri Analizleri
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="my-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-info" href="/api-docs" target="_blank">
+                                <i class="bi bi-code-square me-2"></i> API Dokümantasyonu
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <main role="main" class="flex-grow-1 pb-5 pt-0 mb-5" style="overflow-x: hidden;">
+                @RenderBody()
+            </main>
+        </div>
+    }
+    else
+    {
+        <main role="main" class="pb-5 pt-0 mb-5">
+            @RenderBody()
+        </main>
+    }
 
-    <footer class="border-top footer text-muted bg-light py-3 mt-4">
-        <div class="container">
+    <footer class="border-top footer text-muted bg-light py-3">
+        <div class="container text-center">
             &copy; @DateTime.Now.Year - Tekstil CRM - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <!-- Real-time Badge Updates -->
+        <script>
+            function updateBadges() {
+                // Notification badge
+                fetch('/api/notificationsapi/my-notifications/unread-count')
+                    .then(res => res.json())
+                    .then(data => {
+                        const badge = document.getElementById('notificationBadge');
+                        if (data.unreadCount > 0) {
+                            badge.textContent = data.unreadCount;
+                            badge.style.display = 'inline';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    })
+                    .catch(() => {});
+                
+                // Stock alert badge
+                fetch('/api/stockalertsapi/active')
+                    .then(res => res.json())
+                    .then(data => {
+                        const badge = document.getElementById('stockAlertBadge');
+                        if (data.length > 0) {
+                            badge.textContent = data.length;
+                            badge.style.display = 'inline';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    })
+                    .catch(() => {});
+            }
+            
+            // Update on page load
+            updateBadges();
+            
+            // Update every 30 seconds
+            setInterval(updateBadges, 30000);
+        </script>
+    }
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

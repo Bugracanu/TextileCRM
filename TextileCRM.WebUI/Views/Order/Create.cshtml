@@ -1,66 +1,282 @@
 @model TextileCRM.Domain.Entities.Order
 
 @{
-    ViewData["Title"] = "Yeni Sipariş";
+    ViewData["Title"] = "Yeni Sipariş Oluştur";
 }
 
 <div class="container">
-    <h1>Yeni Sipariş</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9">
+            <!-- Başlık Bölümü -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">
+                        <i class="bi bi-cart-plus text-success"></i> Yeni Sipariş Oluştur
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle"></i> Sipariş bilgilerini doldurun ve ürün ekleyin
+                    </p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+            </div>
 
-    <hr />
-    <div class="row">
-        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
             <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                 
-                <div class="form-group mb-3">
-                    <label asp-for="CustomerId" class="control-label">Müşteri</label>
-                    <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers">
-                        <option value="">-- Müşteri Seçin --</option>
-                    </select>
-                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                <!-- Müşteri Bilgisi -->
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2 mb-3">
+                        <i class="bi bi-person-fill text-success"></i> Müşteri Bilgisi
+                    </h5>
+                    <div class="form-group">
+                        <label asp-for="CustomerId" class="form-label fw-semibold">
+                            <i class="bi bi-person"></i> Müşteri Seçin <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers" required>
+                            <option value="">-- Müşteri Seçin --</option>
+                        </select>
+                        <span asp-validation-for="CustomerId" class="text-danger"></span>
+                    </div>
                 </div>
                 
-                <div class="form-group mb-3">
-                    <label asp-for="OrderDate" class="control-label">Sipariş Tarihi</label>
-                    <input asp-for="OrderDate" class="form-control" type="date" />
-                    <span asp-validation-for="OrderDate" class="text-danger"></span>
+                <!-- Tarih ve Durum Bilgileri -->
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2 mb-3">
+                        <i class="bi bi-calendar-fill text-success"></i> Tarih ve Durum
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="OrderDate" class="form-label fw-semibold">
+                                <i class="bi bi-calendar-check"></i> Sipariş Tarihi <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="OrderDate" class="form-control" type="date" required />
+                            <span asp-validation-for="OrderDate" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DeliveryDate" class="form-label fw-semibold">
+                                <i class="bi bi-truck"></i> Teslim Tarihi
+                            </label>
+                            <input asp-for="DeliveryDate" class="form-control" type="date" />
+                            <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Status" class="form-label fw-semibold">
+                                <i class="bi bi-clipboard-check"></i> Durum <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<TextileCRM.Domain.Entities.OrderStatus>()" required></select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TotalAmount" class="form-label fw-semibold">
+                                <i class="bi bi-currency-dollar"></i> Toplam Tutar <span class="text-muted">(Otomatik)</span>
+                            </label>
+                            <div class="input-group">
+                                <input asp-for="TotalAmount" class="form-control" type="number" step="0.01" readonly />
+                                <span class="input-group-text">TL</span>
+                            </div>
+                            <small class="form-text text-muted">Ürün ekledikçe otomatik hesaplanır</small>
+                            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="DeliveryDate" class="control-label">Teslim Tarihi</label>
-                    <input asp-for="DeliveryDate" class="form-control" type="date" />
-                    <span asp-validation-for="DeliveryDate" class="text-danger"></span>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="Status" class="control-label">Durum</label>
-                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<TextileCRM.Domain.Entities.OrderStatus>()"></select>
-                    <span asp-validation-for="Status" class="text-danger"></span>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="TotalAmount" class="control-label">Toplam Tutar</label>
-                    <input asp-for="TotalAmount" class="form-control" type="number" step="0.01" />
-                    <span asp-validation-for="TotalAmount" class="text-danger"></span>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="Notes" class="control-label">Notlar</label>
-                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+
+                <!-- Notlar -->
+                <div class="mb-4">
+                    <label asp-for="Notes" class="form-label fw-semibold">
+                        <i class="bi bi-sticky"></i> Notlar
+                    </label>
+                    <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Sipariş hakkında notlar..."></textarea>
                     <span asp-validation-for="Notes" class="text-danger"></span>
                 </div>
                 
-                <div class="form-group mb-3">
-                    <input type="submit" value="Oluştur" class="btn btn-primary" />
-                    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                <!-- Ürün Ekleme Bölümü -->
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2 mb-3">
+                        <i class="bi bi-box-seam-fill text-success"></i> Ürün Ekleme
+                    </h5>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Ürün Seçin</label>
+                            <select id="productSelect" class="form-control">
+                                <option value="">-- Ürün Seçin --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Miktar</label>
+                            <input type="number" id="productQuantity" class="form-control" min="1" value="1" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Birim Fiyat</label>
+                            <div class="input-group">
+                                <input type="number" id="productPrice" class="form-control" step="0.01" readonly />
+                                <span class="input-group-text">TL</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">&nbsp;</label>
+                            <button type="button" id="addProductBtn" class="btn btn-success w-100">
+                                <i class="bi bi-plus-circle"></i> Ekle
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Seçilen Ürünler Tablosu -->
+                    <div id="selectedProductsTable" style="display: none;" class="mt-3">
+                        <table class="table table-hover table-bordered mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ürün</th>
+                                    <th style="width: 100px;" class="text-center">Miktar</th>
+                                    <th style="width: 120px;" class="text-end">Birim Fiyat</th>
+                                    <th style="width: 140px;" class="text-end">Toplam</th>
+                                    <th style="width: 60px;" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="selectedProductsBody">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </form>
+                
+                <!-- Form Butonları -->
+                <div class="d-flex gap-2 justify-content-end pt-3 border-top mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> İptal
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle-fill"></i> Sipariş Oluştur
+                    </button>
+                </div>
+                </form>
+                </div>
+            </div>
+            <!-- Bilgilendirme Kartı -->
+            <div class="alert alert-info mt-3 d-flex align-items-start">
+                <i class="bi bi-lightbulb fs-4 me-3"></i>
+                <div>
+                    <strong>İpucu:</strong> Sipariş oluşturduktan sonra durumunu düzenleyebilir ve ürün ekleyebilirsiniz.
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        let selectedProducts = [];
+        let productList = [];
+        
+        // Sayfa yüklendiğinde ürünleri getir
+        $(document).ready(function() {
+            $.get('/Order/GetProducts', function(data) {
+                productList = data;
+                updateProductDropdown();
+            });
+        });
+        
+        function updateProductDropdown() {
+            const productSelect = $('#productSelect');
+            productSelect.empty();
+            productSelect.append('<option value="">-- Ürün Seçin --</option>');
+            
+            productList.forEach(function(product) {
+                productSelect.append(`<option value="${product.id}" data-name="${product.name}" data-price="${product.unitPrice}">${product.name}</option>`);
+            });
+        }
+        
+        // Ürün seçildiğinde fiyatı doldur
+        $('#productSelect').change(function() {
+            const selectedOption = $(this).find('option:selected');
+            const price = selectedOption.data('price');
+            if (price) {
+                $('#productPrice').val(price.toFixed(2));
+            } else {
+                $('#productPrice').val('');
+            }
+        });
+        
+        // Ürün ekle butonu
+        $('#addProductBtn').click(function() {
+            const productSelect = $('#productSelect');
+            const productId = productSelect.val();
+            const productName = productSelect.find('option:selected').data('name');
+            const quantity = parseInt($('#productQuantity').val());
+            const unitPrice = parseFloat($('#productPrice').val());
+            
+            if (!productId || !quantity || !unitPrice) {
+                alert('Lütfen ürün seçin ve miktar girin!');
+                return;
+            }
+            
+            // Ürünü listeye ekle
+            selectedProducts.push({
+                id: productId,
+                name: productName,
+                quantity: quantity,
+                unitPrice: unitPrice,
+                totalPrice: quantity * unitPrice
+            });
+            
+            updateProductTable();
+            updateTotalAmount();
+            
+            // Formu temizle
+            productSelect.val('');
+            $('#productQuantity').val(1);
+            $('#productPrice').val('');
+        });
+        
+        function updateProductTable() {
+            const tbody = $('#selectedProductsBody');
+            tbody.empty();
+            
+            if (selectedProducts.length === 0) {
+                $('#selectedProductsTable').hide();
+                return;
+            }
+            
+            $('#selectedProductsTable').show();
+            
+            selectedProducts.forEach(function(product, index) {
+                const row = `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td class="text-center">${product.quantity}</td>
+                        <td class="text-end">${product.unitPrice.toFixed(2)} TL</td>
+                        <td class="text-end">${product.totalPrice.toFixed(2)} TL</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-danger" onclick="removeProduct(${index})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+        
+        function removeProduct(index) {
+            selectedProducts.splice(index, 1);
+            updateProductTable();
+            updateTotalAmount();
+        }
+        
+        function updateTotalAmount() {
+            const total = selectedProducts.reduce((sum, product) => sum + product.totalPrice, 0);
+            $('input[name="TotalAmount"]').val(total.toFixed(2));
+        }
+    </script>
 }
 

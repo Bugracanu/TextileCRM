@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace TextileCRM.Domain.Entities;
 
 public class OrderItem
@@ -10,6 +12,8 @@ public class OrderItem
     public decimal TotalPrice { get; set; }
     
     // Navigation properties
+    [JsonIgnore]
     public Order Order { get; set; } = null!;
+    [JsonIgnore]
     public Product Product { get; set; } = null!;
 }

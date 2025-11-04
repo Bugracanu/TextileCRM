@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TextileCRM.Domain.Entities;
 
@@ -15,19 +17,35 @@ public class Order
     public DateTime CreatedDate { get; set; }
     
     // Navigation properties
+    [JsonIgnore]
     public Customer Customer { get; set; } = null!;
+    [JsonIgnore]
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }
 
 public enum OrderStatus
 {
+    [Display(Name = "Yeni")]
+    New,
+    
+    [Display(Name = "Beklemede")]
     Pending,
-    InProduction,
-    Completed,
-    Delivered,
-    Cancelled,
-    Processing,
+    
+    [Display(Name = "Onaylandı")]
     Confirmed,
-    New
-
+    
+    [Display(Name = "İşleniyor")]
+    Processing,
+    
+    [Display(Name = "Üretimde")]
+    InProduction,
+    
+    [Display(Name = "Tamamlandı")]
+    Completed,
+    
+    [Display(Name = "Teslim Edildi")]
+    Delivered,
+    
+    [Display(Name = "İptal Edildi")]
+    Cancelled
 }

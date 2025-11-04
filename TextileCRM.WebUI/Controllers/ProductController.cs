@@ -22,16 +22,6 @@ namespace TextileCRM.WebUI.Controllers
             return View(products);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var product = await _productService.GetProductByIdAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(product);
-        }
-
         public IActionResult Create()
         {
             return View();
@@ -103,7 +93,7 @@ namespace TextileCRM.WebUI.Controllers
         public async Task<IActionResult> UpdateStock(int id, int quantity)
         {
             await _productService.UpdateStockAsync(id, quantity);
-            return RedirectToAction(nameof(Details), new { id });
+            return RedirectToAction(nameof(Index));
         }
     }
 }

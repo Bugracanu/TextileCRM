@@ -1,0 +1,122 @@
+@{
+    ViewData["Title"] = "Faturalar";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1"><i class="bi bi-receipt"></i> Faturalar</h2>
+                    <p class="text-muted">Tüm fatura kayıtlarını görüntüleyin ve yönetin</p>
+                </div>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createInvoiceModal">
+                    <i class="bi bi-plus-circle"></i> Yeni Fatura
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtreler -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <select id="statusFilter" class="form-select">
+                <option value="">Tüm Durumlar</option>
+                <option value="0">Taslak</option>
+                <option value="1">Gönderildi</option>
+                <option value="2">Kısmi Ödendi</option>
+                <option value="3">Ödendi</option>
+                <option value="4">Gecikmiş</option>
+                <option value="5">İptal Edildi</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Faturalar Tablosu -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="invoicesTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fatura No</th>
+                            <th>Müşteri</th>
+                            <th>Fatura Tarihi</th>
+                            <th>Vade Tarihi</th>
+                            <th>Tutar</th>
+                            <th>Durum</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoicesTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="text-muted mt-2">Yükleniyor...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadInvoices() {
+            fetch('/api/invoicesapi')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('invoicesTableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Fatura bulunamadı</td></tr>';
+                        return;
+                    }
+                    
+                    data.forEach(invoice => {
+                        const statusMap = ['Taslak', 'Gönderildi', 'Kısmi Ödendi', 'Ödendi', 'Gecikmiş', 'İptal'];
+                        const statusColorMap = ['secondary', 'info', 'warning', 'success', 'danger', 'dark'];
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><strong>${invoice.invoiceNumber}</strong></td>
+                            <td>Müşteri #${invoice.customerId}</td>
+                            <td>${new Date(invoice.invoiceDate).toLocaleDateString('tr-TR')}</td>
+                            <td>${invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString('tr-TR') : '-'}</td>
+                            <td><strong>₺${invoice.totalAmount.toLocaleString('tr-TR')}</strong></td>
+                            <td><span class="badge bg-${statusColorMap[invoice.status]}">${statusMap[invoice.status]}</span></td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary" onclick="viewInvoice(${invoice.id})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-info" onclick="sendInvoice(${invoice.id})">
+                                    <i class="bi bi-envelope"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('invoicesTableBody').innerHTML = 
+                        '<tr><td colspan="7" class="text-center py-4 text-danger">Veri yüklenemedi</td></tr>';
+                });
+        }
+        
+        function sendInvoice(id) {
+            if (confirm('Faturayı email ile göndermek istediğinizden emin misiniz?')) {
+                fetch(`/api/invoicesapi/${id}/send-email`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => alert(data.message))
+                    .catch(err => alert('Email gönderilemedi'));
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadInvoices);
+    </script>
+}
+

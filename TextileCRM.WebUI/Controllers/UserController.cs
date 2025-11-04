@@ -22,16 +22,6 @@ namespace TextileCRM.WebUI.Controllers
             return View(users);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var user = await _userService.GetUserByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
         public IActionResult Create()
         {
             return View();

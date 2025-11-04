@@ -1,151 +1,665 @@
 @using System.Linq
 @using TextileCRM.Domain.Entities
 @{
-    ViewData["Title"] = "Ana Sayfa";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="container-fluid px-0 mt-0">
-    <div class="row g-0">
-        <!-- Sol Sidebar -->
-        <div class="col-md-3 px-2">
-            <div class="d-flex flex-column gap-2">
-                <a asp-controller="Customer" asp-action="Index" class="text-decoration-none">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0"><i class="bi bi-people"></i> Müşteriler</h6>
+<div class="container-fluid">
+    <!-- Hero Bölümü -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="dashboard-hero card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="hero-icon me-3">
+                                    <i class="bi bi-emoji-smile"></i>
                                 </div>
-                                <h4 class="mb-0">@ViewBag.CustomerCount</h4>
+                                <div>
+                                    <h3 class="mb-1 fw-bold">
+                                        Hoş geldiniz, <span class="hero-username">@User.Identity?.Name</span>
+                                    </h3>
+                                    <p class="hero-subtitle mb-0">
+                                        <i class="bi bi-calendar3"></i> @DateTime.Now.ToString("dd MMMM yyyy, dddd") | 
+                                        <i class="bi bi-clock"></i> @DateTime.Now.ToString("HH:mm")
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                            <div class="d-flex gap-2 justify-content-md-end flex-wrap">
+                                <a asp-controller="Order" asp-action="Create" class="btn btn-light btn-hover-success">
+                                    <i class="bi bi-plus-circle-fill"></i> Yeni Sipariş
+                                </a>
+                                <a asp-controller="Customer" asp-action="Create" class="btn btn-light btn-hover-primary">
+                                    <i class="bi bi-person-plus-fill"></i> Yeni Müşteri
+                                </a>
                             </div>
                         </div>
                     </div>
-                </a>
-                
-                <a asp-controller="Order" asp-action="Index" class="text-decoration-none">
-                    <div class="card bg-success text-white">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0"><i class="bi bi-cart3"></i> Siparişler</h6>
-                                </div>
-                                <h4 class="mb-0">@ViewBag.OrderCount</h4>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                
-                <a asp-controller="Product" asp-action="Index" class="text-decoration-none">
-                    <div class="card bg-info text-white">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0"><i class="bi bi-box-seam"></i> Ürünler</h6>
-                                </div>
-                                <h4 class="mb-0">@ViewBag.ProductCount</h4>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                
-                <a asp-controller="Employee" asp-action="Index" class="text-decoration-none">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0"><i class="bi bi-person-badge"></i> Çalışanlar</h6>
-                                </div>
-                                <h4 class="mb-0">@ViewBag.EmployeeCount</h4>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                
-                <a asp-controller="WorkLog" asp-action="Index" class="text-decoration-none">
-                    <div class="card bg-dark text-white">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0"><i class="bi bi-clock-history"></i> Çalışma Kayıtları</h6>
-                                </div>
-                                <h4 class="mb-0">@ViewBag.WorkLogCount</h4>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-controller="User" asp-action="Index" class="text-decoration-none">
-                        <div class="card bg-secondary text-white">
-                            <div class="card-body py-2">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-0"><i class="bi bi-people-fill"></i> Kullanıcılar</h6>
-                                    </div>
-                                    <h4 class="mb-0"><i class="bi bi-shield-lock"></i></h4>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                }
+                </div>
             </div>
         </div>
-        
-        <!-- Sağ İçerik Alanı -->
-        <div class="col-md-9 px-3">
-    <!-- Son Siparişler -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Son Siparişler</h5>
+    </div>
+
+    <!-- API KPI Kartları (Dinamik) -->
+    <div class="row g-3 mb-4" id="apiKpiCards">
+        <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <p class="text-muted mt-2">KPI verileri yükleniyor...</p>
+        </div>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="row g-3 mb-4">
+        <!-- Müşteriler -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Customer" asp-action="Index" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-people-fill fs-3"></i>
+                            </div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-arrow-up"></i> Aktif
+                            </span>
+                        </div>
+                        <h3 class="mb-1 fw-bold">@ViewBag.CustomerCount</h3>
+                        <p class="text-muted mb-0">Müşteriler</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                        <small class="text-primary">
+                            <i class="bi bi-arrow-right-circle"></i> Tümünü Görüntüle
+                        </small>
+                    </div>
                 </div>
-                <div class="card-body">
+            </a>
+        </div>
+
+        <!-- Siparişler -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Order" asp-action="Index" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-cart3 fs-3"></i>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-graph-up"></i> Toplam
+                            </span>
+                        </div>
+                        <h3 class="mb-1 fw-bold">@ViewBag.OrderCount</h3>
+                        <p class="text-muted mb-0">Siparişler</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                        <small class="text-success">
+                            <i class="bi bi-arrow-right-circle"></i> Tümünü Görüntüle
+                        </small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Ürünler -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Product" asp-action="Index" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-box-seam-fill fs-3"></i>
+                            </div>
+                            <span class="badge bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-boxes"></i> Stok
+                            </span>
+                        </div>
+                        <h3 class="mb-1 fw-bold">@ViewBag.ProductCount</h3>
+                        <p class="text-muted mb-0">Ürünler</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                        <small class="text-info">
+                            <i class="bi bi-arrow-right-circle"></i> Tümünü Görüntüle
+                        </small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Çalışanlar -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Employee" asp-action="Index" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-person-badge-fill fs-3"></i>
+                            </div>
+                            <span class="badge bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-people"></i> Ekip
+                            </span>
+                        </div>
+                        <h3 class="mb-1 fw-bold">@ViewBag.EmployeeCount</h3>
+                        <p class="text-muted mb-0">Çalışanlar</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                        <small class="text-warning">
+                            <i class="bi bi-arrow-right-circle"></i> Tümünü Görüntüle
+                        </small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Hızlı İşlemler - Kompakt -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Order" asp-action="Create" class="text-decoration-none">
+                <div class="card border-0 shadow-sm quick-action-card">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <div class="quick-action-icon bg-success bg-opacity-10 text-success me-3">
+                                <i class="bi bi-plus-circle-fill fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-semibold">Yeni Sipariş</h6>
+                                <small class="text-muted">Sipariş oluştur</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Customer" asp-action="Create" class="text-decoration-none">
+                <div class="card border-0 shadow-sm quick-action-card">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <div class="quick-action-icon bg-primary bg-opacity-10 text-primary me-3">
+                                <i class="bi bi-person-plus-fill fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-semibold">Yeni Müşteri</h6>
+                                <small class="text-muted">Müşteri ekle</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Product" asp-action="Create" class="text-decoration-none">
+                <div class="card border-0 shadow-sm quick-action-card">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <div class="quick-action-icon bg-info bg-opacity-10 text-info me-3">
+                                <i class="bi bi-box-seam-fill fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-semibold">Yeni Ürün</h6>
+                                <small class="text-muted">Ürün ekle</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="WorkLog" asp-action="Create" class="text-decoration-none">
+                <div class="card border-0 shadow-sm quick-action-card">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <div class="quick-action-icon bg-secondary bg-opacity-10 text-secondary me-3">
+                                <i class="bi bi-clock-fill fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-semibold">Mesai Kaydı</h6>
+                                <small class="text-muted">Kayıt oluştur</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Son Siparişler - Tam Genişlik -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">
+                                <i class="bi bi-clock-history text-primary"></i> Son Siparişler
+                            </h5>
+                            <small class="text-muted">En son eklenen siparişler</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a asp-controller="Order" asp-action="Create" class="btn btn-sm btn-success">
+                                <i class="bi bi-plus-circle"></i> Yeni Sipariş
+                            </a>
+                            <a asp-controller="Order" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-arrow-right"></i> Tümünü Görüntüle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
                     @{ var recentOrders = ViewBag.RecentOrders as IEnumerable<Order>; }
                     @if (recentOrders != null && recentOrders.Any())
                     {
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Sipariş No</th>
-                                    <th>Müşteri</th>
-                                    <th>Tarih</th>
-                                    <th>Durum</th>
-                                    <th>Toplam</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var order in recentOrders)
-                                {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 dashboard-table">
+                                <thead class="table-light">
                                     <tr>
-                                        <td>@order.Id</td>
-                                        <td>@(order.Customer?.CompanyName ?? ($"Müşteri #{order.CustomerId}"))</td>
-                                        <td>@order.OrderDate.ToShortDateString()</td>
-                                        <td>@order.Status</td>
-                                        <td>@order.TotalAmount.ToString("C")</td>
-                                        <td>
-                                            <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-primary me-1">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a asp-controller="Order" asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                        </td>
+                                        <th style="width: 100px;" class="text-center">Sipariş No</th>
+                                        <th style="width: 25%;">Müşteri</th>
+                                        <th style="width: 150px;">Sipariş Tarihi</th>
+                                        <th style="width: 150px;">Teslim Tarihi</th>
+                                        <th style="width: 160px;">Durum</th>
+                                        <th style="width: 150px;" class="text-end">Toplam Tutar</th>
+                                        <th style="width: 100px;" class="text-center">İşlemler</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in recentOrders)
+                                    {
+                                        <tr>
+                                            <td class="text-center align-middle">
+                                                <span class="badge bg-dark">#@order.Id</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div>
+                                                    <strong class="d-block">@(order.Customer?.Name ?? order.Customer?.CompanyName ?? $"Müşteri #{order.CustomerId}")</strong>
+                                                    @if (!string.IsNullOrEmpty(order.Customer?.CompanyName) && order.Customer?.Name != order.Customer?.CompanyName)
+                                                    {
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-building"></i> @order.Customer?.CompanyName
+                                                        </small>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <i class="bi bi-calendar-check text-primary"></i>
+                                                <span>@order.OrderDate.ToString("dd MMM yyyy")</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                @if (order.DeliveryDate.HasValue)
+                                                {
+                                                    <i class="bi bi-truck text-success"></i>
+                                                    <span>@order.DeliveryDate.Value.ToString("dd MMM yyyy")</span>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-muted">-</small>
+                                                }
+                                            </td>
+                                            <td class="align-middle">
+                                                <span class="badge @(order.Status == OrderStatus.Completed ? "bg-success" : 
+                                                                    order.Status == OrderStatus.InProduction ? "bg-warning text-dark" : 
+                                                                    order.Status == OrderStatus.Cancelled ? "bg-danger" : "bg-info")">
+                                                    @order.Status
+                                                </span>
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                <strong class="fs-6">@order.TotalAmount.ToString("C")</strong>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <a asp-controller="Order" asp-action="Edit" asp-route-id="@order.Id" 
+                                                   class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     }
                     else
                     {
-                        <p class="text-muted">Henüz sipariş bulunmamaktadır.</p>
+                        <div class="p-5 text-center">
+                            <i class="bi bi-inbox fs-1 text-muted"></i>
+                            <p class="text-muted mt-3 mb-2 fw-semibold">Henüz sipariş bulunmamaktadır</p>
+                            <a asp-controller="Order" asp-action="Create" class="btn btn-success mt-2">
+                                <i class="bi bi-plus-circle"></i> İlk Siparişi Oluştur
+                            </a>
+                        </div>
                     }
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Grafikler Bölümü -->
+    <div class="row g-3 mb-4">
+        <!-- Satış Trendi -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up-arrow text-primary"></i> Satış Trendi (Son 30 Gün)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesTrendChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sipariş Durumu Dağılımı -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart text-success"></i> Sipariş Durumu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stok Uyarıları ve Bildirimler -->
+    <div class="row g-3 mb-4">
+        <!-- Stok Uyarıları -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle text-warning"></i> Aktif Stok Uyarıları
+                        </h5>
+                        <a href="/StockAlerts" class="btn btn-sm btn-outline-warning">Tümünü Gör</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="stockAlertsContainer" class="list-group list-group-flush">
+                        <div class="text-center p-4">
+                            <div class="spinner-border text-warning" role="status">
+                                <span class="visually-hidden">Yükleniyor...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- En Çok Satan Ürünler -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-trophy text-warning"></i> En Çok Satan Ürünler
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="topProductsContainer" class="list-group list-group-flush">
+                        <div class="text-center p-4">
+                            <div class="spinner-border text-info" role="status">
+                                <span class="visually-hidden">Yükleniyor...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // KPI Kartlarını Yükle
+        function loadKPICards() {
+            fetch('/api/dashboardapi/kpi-cards')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('apiKpiCards');
+                    container.innerHTML = '';
+                    
+                    const row = document.createElement('div');
+                    row.className = 'row g-3';
+                    
+                    data.cards.forEach(card => {
+                        const colorMap = {
+                            'success': 'success',
+                            'primary': 'primary',
+                            'info': 'info',
+                            'warning': 'warning',
+                            'danger': 'danger'
+                        };
+                        
+                        const iconMap = {
+                            'currency': 'bi-currency-dollar',
+                            'shopping-cart': 'bi-cart3',
+                            'users': 'bi-people',
+                            'clock': 'bi-clock-history'
+                        };
+                        
+                        const color = colorMap[card.color] || 'primary';
+                        const icon = iconMap[card.icon] || 'bi-info-circle';
+                        const trendIcon = card.trend === 'up' ? 'bi-arrow-up' : card.trend === 'down' ? 'bi-arrow-down' : 'bi-dash';
+                        const trendClass = card.trend === 'up' ? 'positive' : card.trend === 'down' ? 'negative' : 'neutral';
+                        
+                        const col = document.createElement('div');
+                        col.className = 'col-md-6 col-lg-3';
+                        col.innerHTML = `
+                            <div class="kpi-card border-0 shadow-sm h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="kpi-card-icon bg-${color} bg-opacity-10 text-${color}">
+                                        <i class="bi ${icon}"></i>
+                                    </div>
+                                    <span class="kpi-change ${trendClass}">
+                                        <i class="bi ${trendIcon}"></i> ${card.change}%
+                                    </span>
+                                </div>
+                                <h2 class="kpi-value mb-2">${formatNumber(card.value)}</h2>
+                                <p class="text-muted mb-0">${card.title}</p>
+                            </div>
+                        `;
+                        row.appendChild(col);
+                    });
+                    
+                    container.appendChild(row);
+                })
+                .catch(err => {
+                    console.error('KPI Error:', err);
+                    document.getElementById('apiKpiCards').innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> KPI verileri yüklenemedi.
+                            </div>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Satış Trendi Grafiği
+        function loadSalesTrendChart() {
+            fetch('/api/dashboardapi/sales-chart-data?days=30')
+                .then(res => res.json())
+                .then(data => {
+                    const ctx = document.getElementById('salesTrendChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            interaction: {
+                                mode: 'index',
+                                intersect: false,
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return '₺' + value.toLocaleString('tr-TR');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(err => console.error('Sales Chart Error:', err));
+        }
+        
+        // Sipariş Durumu Grafiği
+        function loadOrderStatusChart() {
+            fetch('/api/dashboardapi/order-status-distribution')
+                .then(res => res.json())
+                .then(data => {
+                    const ctx = document.getElementById('orderStatusChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(err => console.error('Status Chart Error:', err));
+        }
+        
+        // Stok Uyarılarını Yükle
+        function loadStockAlerts() {
+            fetch('/api/stockalertsapi/active')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('stockAlertsContainer');
+                    
+                    if (data.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center p-4 text-success">
+                                <i class="bi bi-check-circle fs-2"></i>
+                                <p class="mb-0 mt-2">Stok uyarısı bulunmuyor</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    container.innerHTML = '';
+                    data.slice(0, 5).forEach(alert => {
+                        const alertTypeIcon = {
+                            0: 'bi-exclamation-circle',
+                            1: 'bi-x-circle',
+                            2: 'bi-arrow-repeat',
+                            3: 'bi-box'
+                        }[alert.alertType] || 'bi-info-circle';
+                        
+                        const item = document.createElement('div');
+                        item.className = 'list-group-item';
+                        item.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi ${alertTypeIcon} text-warning"></i>
+                                    <strong>Ürün #${alert.productId}</strong>
+                                    <p class="mb-0 small text-muted">Mevcut Stok: ${alert.currentQuantity}</p>
+                                </div>
+                                <span class="badge bg-warning">${alert.currentQuantity} adet</span>
+                            </div>
+                        `;
+                        container.appendChild(item);
+                    });
+                })
+                .catch(() => {
+                    document.getElementById('stockAlertsContainer').innerHTML = `
+                        <div class="text-center p-4 text-muted">
+                            <p class="mb-0">Veriler yüklenemedi</p>
+                        </div>
+                    `;
+                });
+        }
+        
+        // En Çok Satan Ürünler
+        function loadTopProducts() {
+            fetch('/api/dashboardapi/top-selling-products?limit=5')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('topProductsContainer');
+                    
+                    if (data.topProducts.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center p-4 text-muted">
+                                <p class="mb-0">Henüz satış verisi yok</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    container.innerHTML = '';
+                    data.topProducts.forEach((product, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'list-group-item';
+                        item.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge bg-${index === 0 ? 'warning' : 'secondary'} me-2">#${index + 1}</span>
+                                    <strong>${product.productName}</strong>
+                                    <p class="mb-0 small text-muted">${product.quantitySold} adet satıldı</p>
+                                </div>
+                                <strong class="text-success">₺${product.revenue.toLocaleString('tr-TR')}</strong>
+                            </div>
+                        `;
+                        container.appendChild(item);
+                    });
+                })
+                .catch(() => {
+                    document.getElementById('topProductsContainer').innerHTML = `
+                        <div class="text-center p-4 text-muted">
+                            <p class="mb-0">Veriler yüklenemedi</p>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Sayı Formatlama
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toLocaleString('tr-TR');
+        }
+        
+        // Sayfa yüklendiğinde tüm verileri çek
+        document.addEventListener('DOMContentLoaded', function() {
+            loadKPICards();
+            loadSalesTrendChart();
+            loadOrderStatusChart();
+            loadStockAlerts();
+            loadTopProducts();
+            
+            // Her 60 saniyede bir güncelle
+            setInterval(() => {
+                loadKPICards();
+                loadStockAlerts();
+            }, 60000);
+        });
+    </script>
+}

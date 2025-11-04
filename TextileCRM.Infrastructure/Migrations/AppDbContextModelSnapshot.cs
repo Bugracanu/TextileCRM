@@ -114,6 +114,172 @@ namespace TextileCRM.Infrastructure.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("TextileCRM.Domain.Entities.FileAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UploadedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UploadedBy");
+
+                    b.ToTable("FileAttachments");
+                });
+
+            modelBuilder.Entity("TextileCRM.Domain.Entities.Invoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("InvoiceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InvoiceNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PaidDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Invoices");
+                });
+
+            modelBuilder.Entity("TextileCRM.Domain.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("TextileCRM.Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -183,6 +349,51 @@ namespace TextileCRM.Infrastructure.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("TextileCRM.Domain.Entities.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentReference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("TextileCRM.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -221,6 +432,48 @@ namespace TextileCRM.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("TextileCRM.Domain.Entities.StockAlert", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AlertType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CurrentQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ResolvedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ResolvedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThresholdQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("StockAlerts");
                 });
 
             modelBuilder.Entity("TextileCRM.Domain.Entities.User", b =>
@@ -317,6 +570,47 @@ namespace TextileCRM.Infrastructure.Migrations
                     b.ToTable("WorkLogs");
                 });
 
+            modelBuilder.Entity("TextileCRM.Domain.Entities.FileAttachment", b =>
+                {
+                    b.HasOne("TextileCRM.Domain.Entities.User", "UploadedByUser")
+                        .WithMany()
+                        .HasForeignKey("UploadedBy")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("UploadedByUser");
+                });
+
+            modelBuilder.Entity("TextileCRM.Domain.Entities.Invoice", b =>
+                {
+                    b.HasOne("TextileCRM.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("TextileCRM.Domain.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("TextileCRM.Domain.Entities.Notification", b =>
+                {
+                    b.HasOne("TextileCRM.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TextileCRM.Domain.Entities.Order", b =>
                 {
                     b.HasOne("TextileCRM.Domain.Entities.Customer", "Customer")
@@ -347,6 +641,28 @@ namespace TextileCRM.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("TextileCRM.Domain.Entities.Payment", b =>
+                {
+                    b.HasOne("TextileCRM.Domain.Entities.Invoice", "Invoice")
+                        .WithMany("Payments")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+                });
+
+            modelBuilder.Entity("TextileCRM.Domain.Entities.StockAlert", b =>
+                {
+                    b.HasOne("TextileCRM.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("TextileCRM.Domain.Entities.WorkLog", b =>
                 {
                     b.HasOne("TextileCRM.Domain.Entities.Employee", "Employee")
@@ -361,6 +677,11 @@ namespace TextileCRM.Infrastructure.Migrations
             modelBuilder.Entity("TextileCRM.Domain.Entities.Employee", b =>
                 {
                     b.Navigation("WorkLogs");
+                });
+
+            modelBuilder.Entity("TextileCRM.Domain.Entities.Invoice", b =>
+                {
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("TextileCRM.Domain.Entities.Order", b =>

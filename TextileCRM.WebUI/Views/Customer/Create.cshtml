@@ -1,53 +1,118 @@
 @model TextileCRM.Domain.Entities.Customer
 
 @{
-    ViewData["Title"] = "Müşteri Ekle";
+    ViewData["Title"] = "Yeni Müşteri Ekle";
 }
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <h1 class="text-center mb-4">Müşteri Ekle</h1>
-            <hr />
-            
+        <div class="col-md-10 col-lg-8">
+            <!-- Başlık Bölümü -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">
+                        <i class="bi bi-person-plus-fill text-primary"></i> Yeni Müşteri Ekle
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle"></i> Lütfen tüm gerekli alanları doldurun
+                    </p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+            </div>
+
             <div class="card shadow-sm">
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form asp-action="Create">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                         
-                        <div class="form-group mb-3">
-                            <label asp-for="Name" class="control-label fw-semibold">Müşteri Adı</label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
+                        <!-- Temel Bilgiler -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-person-fill text-primary"></i> Temel Bilgiler
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Name" class="form-label fw-semibold">
+                                        <i class="bi bi-person"></i> Müşteri Adı <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Name" class="form-control" placeholder="Örn: Ahmet Yılmaz" required />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="CompanyName" class="form-label fw-semibold">
+                                        <i class="bi bi-building"></i> Şirket Adı
+                                    </label>
+                                    <input asp-for="CompanyName" class="form-control" placeholder="Örn: ABC Tekstil Ltd." />
+                                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ContactName" class="form-label fw-semibold">
+                                    <i class="bi bi-person-badge"></i> İletişim Kişisi
+                                </label>
+                                <input asp-for="ContactName" class="form-control" placeholder="Örn: Mehmet Demir (Satın Alma Müdürü)" />
+                                <small class="form-text text-muted">İş yeri için ayrı bir iletişim kişisi varsa belirtin</small>
+                                <span asp-validation-for="ContactName" class="text-danger"></span>
+                            </div>
                         </div>
-                        
-                        <div class="form-group mb-3">
-                            <label asp-for="Email" class="control-label fw-semibold">E-posta <span class="text-danger">*</span></label>
-                            <input asp-for="Email" class="form-control" type="email" required />
-                            <span asp-validation-for="Email" class="text-danger"></span>
+
+                        <!-- İletişim Bilgileri -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-envelope-fill text-primary"></i> İletişim Bilgileri
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Email" class="form-label fw-semibold">
+                                        <i class="bi bi-envelope"></i> E-posta <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Email" class="form-control" type="email" placeholder="ornek@email.com" required />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Phone" class="form-label fw-semibold">
+                                        <i class="bi bi-telephone"></i> Telefon <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Phone" class="form-control" type="tel" placeholder="0555 123 4567" required />
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label fw-semibold">
+                                    <i class="bi bi-geo-alt"></i> Adres
+                                </label>
+                                <textarea asp-for="Address" class="form-control" rows="3" 
+                                          placeholder="Tam adres (Mahalle, Sokak, Bina No, İlçe, İl)"></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
                         </div>
-                        
-                        <div class="form-group mb-3">
-                            <label asp-for="Phone" class="control-label fw-semibold">Telefon</label>
-                            <input asp-for="Phone" class="form-control" />
-                            <span asp-validation-for="Phone" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label asp-for="Address" class="control-label fw-semibold">Adres</label>
-                            <textarea asp-for="Address" class="form-control" rows="3"></textarea>
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="form-group d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Kaydet
-                            </button>
+
+                        <!-- Form Butonları -->
+                        <div class="d-flex gap-2 justify-content-end pt-3 border-top">
                             <a asp-action="Index" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Listeye Dön
+                                <i class="bi bi-x-circle"></i> İptal
                             </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle-fill"></i> Müşteri Ekle
+                            </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- Bilgilendirme Kartı -->
+            <div class="alert alert-info mt-3 d-flex align-items-start">
+                <i class="bi bi-lightbulb fs-4 me-3"></i>
+                <div>
+                    <strong>İpucu:</strong> Müşteri ekledikten sonra sipariş oluşturabilir ve detaylı bilgilerini görüntüleyebilirsiniz.
                 </div>
             </div>
         </div>

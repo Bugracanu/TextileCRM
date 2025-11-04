@@ -5,45 +5,89 @@
 }
 
 <div class="container">
-    <h1>Kullanıcı Düzenle</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Başlık Bölümü -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">
+                        <i class="bi bi-pencil-square text-danger"></i> Kullanıcı Düzenle
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-hash"></i> Kullanıcı ID: <strong>@Model.Id</strong> | 
+                        <i class="bi bi-person-circle"></i> <strong>@Model.Username</strong>
+                    </p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Geri Dön
+                </a>
+            </div>
 
-    <hr />
-    <div class="row">
-        <div class="col-md-6">
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="CreatedDate" />
-                <input type="hidden" asp-for="PasswordHash" />
-                
-                <div class="form-group mb-3">
-                    <label asp-for="Username" class="control-label">Kullanıcı Adı</label>
-                    <input asp-for="Username" class="form-control" required />
-                    <span asp-validation-for="Username" class="text-danger"></span>
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedDate" />
+                        <input type="hidden" asp-for="PasswordHash" />
+                        
+                        <!-- Hesap Bilgileri -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-shield-fill text-danger"></i> Hesap Bilgileri
+                            </h5>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Username" class="form-label fw-semibold">
+                                    <i class="bi bi-person-circle"></i> Kullanıcı Adı <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Username" class="form-control" required />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Role" class="form-label fw-semibold">
+                                    <i class="bi bi-star"></i> Rol <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="Role" class="form-control" required>
+                                    <option value="Admin">🛡️ Admin - Tam Yetki</option>
+                                    <option value="Manager">⭐ Manager - Yönetici</option>
+                                    <option value="User">👤 User - Kullanıcı</option>
+                                </select>
+                                <span asp-validation-for="Role" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" />
+                                    <label asp-for="IsActive" class="form-check-label fw-semibold">
+                                        <i class="bi bi-check-circle"></i> Hesap Aktif
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">Aktif olmayan kullanıcılar giriş yapamaz</small>
+                            </div>
+                        </div>
+
+                        <!-- Form Butonları -->
+                        <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> İptal
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="bi bi-save-fill"></i> Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                
-                <div class="form-group mb-3">
-                    <label asp-for="Role" class="control-label">Rol</label>
-                    <select asp-for="Role" class="form-control">
-                        <option value="Admin">Admin</option>
-                        <option value="Manager">Manager</option>
-                        <option value="User">User</option>
-                    </select>
-                    <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <!-- Bilgilendirme Kartı -->
+            <div class="alert alert-info mt-3 d-flex align-items-start">
+                <i class="bi bi-info-circle fs-4 me-3"></i>
+                <div>
+                    <strong>Not:</strong> Şifre değiştirmek için "Şifre Değiştir" bölümünü kullanın.
                 </div>
-                
-                <div class="form-group mb-3">
-                    <div class="form-check">
-                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
-                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
-                    </div>
-                </div>
-                
-                <div class="form-group mb-3">
-                    <input type="submit" value="Kaydet" class="btn btn-primary" />
-                    <a asp-action="Index" class="btn btn-secondary">İptal</a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -51,4 +95,3 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-

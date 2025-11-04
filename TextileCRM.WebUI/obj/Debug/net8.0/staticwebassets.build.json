@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "R1XYho0Ghrzy7V22M995ji4eHQvudJXKiF7SYLcs/jQ=",
+  "Hash": "fJpSo13dQp1YU6BnhCqyXMWjE6LYlfT7j6wMZKp0EJI=",
   "Source": "TextileCRM.WebUI",
   "BasePath": "_content/TextileCRM.WebUI",
   "Mode": "Default",
@@ -91,6 +91,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\mblac\\Desktop\\TextileCRM\\TextileCRM.WebUI\\wwwroot\\images\\logo.svg",
+      "SourceId": "TextileCRM.WebUI",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\mblac\\Desktop\\TextileCRM\\TextileCRM.WebUI\\wwwroot\\",
+      "BasePath": "_content/TextileCRM.WebUI",
+      "RelativePath": "images/logo.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo.svg"
     },
     {
       "Identity": "C:\\Users\\mblac\\Desktop\\TextileCRM\\TextileCRM.WebUI\\wwwroot\\js\\site.js",

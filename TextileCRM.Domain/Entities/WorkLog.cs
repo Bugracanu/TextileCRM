@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace TextileCRM.Domain.Entities;
 
@@ -13,5 +14,6 @@ public class WorkLog
     public DateTime CreatedDate { get; set; }
     
     // Navigation properties
+    [JsonIgnore]
     public Employee Employee { get; set; } = null!;
 }
